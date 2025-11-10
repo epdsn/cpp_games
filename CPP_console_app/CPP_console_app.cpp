@@ -11,6 +11,7 @@ using namespace std;
 class NumberGuessingGame {
 private:
     mt19937 rng;
+    string playerName;
     
 public:
     NumberGuessingGame() : rng(time(nullptr)) {}
@@ -232,9 +233,17 @@ void displayMainMenu() {
 int main()
 {
     int mainChoice;
+    string playerName;
     
     cout << "### Welcome to the Ultimate Game Collection! ###" << endl;
-    
+    cout << "===============================================" << endl;
+    cout << "What is your name: ";
+    cin >> playerName;
+    if (playerName.empty()) {
+        playerName = "Player";
+    }
+
+    cout << "Hello, " << playerName << "! Get ready for some fun!" << endl;
     do {
         displayMainMenu();
         cin >> mainChoice;
