@@ -1,15 +1,51 @@
-# Number Guessing Game
+# C++ Game Collection
 
-A simple console-based number guessing game written in C++ for learning purposes. This project demonstrates fundamental C++ concepts including loops, conditionals, input/output, and random number generation.
+A comprehensive console-based game collection written in C++ featuring three exciting games! This project demonstrates various C++ concepts including object-oriented programming, random number generation, and interactive console applications.
 
-## 🎮 Game Description
+## 🎮 Game Collection
 
-The computer generates a random number between 0 and 10, and you try to guess it! After each guess, you'll receive feedback:
+### 1. 🎯 Number Guessing Game
+A classic guessing game where you try to guess a random number between 1-100! The computer provides hints after each guess:
 - **"Too high!"** - Your guess is greater than the secret number
 - **"Too low!"** - Your guess is less than the secret number
 - **"Congratulations!"** - You guessed correctly!
 
-The game tracks how many attempts it takes you to find the correct number.
+**Features:**
+- Attempt tracking
+- Performance ranking based on number of tries
+- Personalized feedback
+
+### 2. 🧮 Math Master Game
+Test your math skills with this interactive quiz game featuring multiple difficulty levels!
+
+**Features:**
+- **3 Difficulty Levels:**
+  - Easy: Addition & Subtraction (1-20)
+  - Medium: All operations (1-50) 
+  - Hard: All operations (1-100)
+- **Scoring System:** Earn points for correct answers
+- **Statistics Tracking:** View accuracy percentage and ranking
+- **Achievement System:** Math Master, Expert, Scholar rankings
+
+### 3. 🏰 Dungeon Crawler Game
+Create your character and prepare for adventure in this RPG-style character creation system!
+
+**Features:**
+- **4 Character Classes:**
+  - 🗡️ **Warrior**: High strength, masters of combat
+  - 🔮 **Mage**: High magic, wielders of powerful spells
+  - ⚖️ **Paladin**: Balanced holy warriors
+  - 🏹 **Ranger**: Versatile and swift adventurers
+
+- **Class-Specific Weapons:**
+  - Warriors: Iron Sword, War Hammer, Sword & Shield
+  - Mages: Crystal Staff, Spell Tome, Lightning Wand
+  - Paladins: Holy Blade, Divine Mace, Sacred Shield
+  - Rangers: Elven Bow, Twin Blades, Crossbow
+
+- **Stat Allocation:** Distribute 10 bonus points between Strength and Magic
+- **Character Sheet:** Complete overview of your character's abilities
+- **RPG Elements:** Health, level, and gold tracking
 
 ## 📋 Prerequisites
 
@@ -20,16 +56,33 @@ The game tracks how many attempts it takes you to find the correct number.
 
 ## 🚀 How to Compile and Run
 
-### Method 1: Using Visual Studio IDE (Easiest)
+### Method 1: Using g++ (Recommended)
 
-1. Open `CPP_console_app.sln` in Visual Studio
+If you have g++ installed (like MinGW-w64):
+
+1. Open PowerShell or Command Prompt
+2. Navigate to the project directory:
+   ```bash
+   cd "C:\Users\ep1\source\repos\cpp_games\cpp_games\CPP_console_app"
+   ```
+3. Compile the program:
+   ```bash
+   g++ -o games.exe CPP_console_app.cpp
+   ```
+4. Run the game collection:
+   ```bash
+   .\games.exe
+   ```
+
+### Method 2: Using Visual Studio IDE
+
+1. Open `CPP_console_app.sln` in Visual Studio (if project files work)
 2. Press **F5** to build and run
    - Or go to **Build → Build Solution** (Ctrl+Shift+B), then run the executable
 
-### Method 2: Using Command Line with MSVC
+### Method 3: Using Command Line with MSVC
 
 1. Open **"x64 Native Tools Command Prompt for VS 2019"** (or your VS version)
-   - Search for it in the Start Menu
 2. Navigate to the project directory:
    ```bash
    cd C:\Users\ep1\source\repos\cpp_games\cpp_games\CPP_console_app
@@ -43,108 +96,159 @@ The game tracks how many attempts it takes you to find the correct number.
    CPP_console_app.exe
    ```
 
-### Method 3: Using g++ (MinGW-w64)
+## 🎮 How to Play
 
-If you have g++ installed and in your PATH:
+1. **Start the Game Collection:**
+   - Enter your name when prompted
+   - Choose from the main menu:
 
-1. Open PowerShell or Command Prompt
-2. Navigate to the project directory:
-   ```bash
-   cd C:\Users\ep1\source\repos\cpp_games\cpp_games\CPP_console_app
+2. **Game Menu:**
    ```
-3. Compile the program:
-   ```bash
-   g++ -o guessing_game CPP_console_app.cpp
+   1. Number Guessing Game
+   2. Math Master Game  
+   3. Dungeon Crawler Game
+   4. Quit
    ```
-4. Run the executable:
-   ```bash
-   .\guessing_game.exe
-   ```
+
+3. **Play Your Chosen Game:**
+   - Each game has its own rules and objectives
+   - Return to main menu to try different games
+   - Your name is used throughout for personalization
 
 ## 📁 Project Structure
 
 ```
 cpp_games/
 ├── CPP_console_app/
-│   ├── CPP_console_app.cpp    # Main source code
+│   ├── CPP_console_app.cpp    # Main source code (all games)
 │   └── CPP_console_app.vcxproj # Visual Studio project file
 ├── CPP_console_app.sln        # Visual Studio solution file
+├── .gitignore                 # Git ignore file
 └── README.md                  # This file
 ```
 
 ## 🎓 Learning Concepts Covered
 
-This project demonstrates:
+This game collection demonstrates:
 
-1. **Basic C++ Syntax**
-   - Includes (`#include`)
-   - Namespace usage (`using namespace std`)
-   - Main function structure
+### **Object-Oriented Programming**
+- **Classes and Objects**: Each game is its own class
+- **Encapsulation**: Private member variables and public methods
+- **Constructors**: Proper initialization of game objects
+- **Method Organization**: Logical separation of functionality
 
-2. **Data Types**
-   - `int` for integers
-   - Variable declaration and initialization
+### **Modern C++ Features**
+- **Random Number Generation**: `mt19937` Mersenne Twister generator
+- **STL Containers**: `vector`, `string`, `pair`
+- **Smart Memory Management**: No manual memory allocation needed
 
-3. **Input/Output**
-   - `cout` for output
-   - `cin` for input
-   - Stream operators (`<<` and `>>`)
+### **Game Programming Concepts**
+- **State Management**: Character stats, game scores, player progress
+- **Menu Systems**: Interactive console menus with validation
+- **User Experience**: Personalized gameplay with player names
 
-4. **Control Flow**
-   - `do-while` loops
-   - `if/else if/else` conditionals
-   - Comparison operators (`==`, `>`, `<`, `!=`)
+### **Core Programming Concepts**
+1. **Data Types & Variables**: `int`, `string`, `char`, `double`
+2. **Control Flow**: 
+   - `do-while` and `for` loops
+   - `switch` statements and complex conditionals
+   - Function calls and returns
 
-5. **Random Number Generation**
-   - `srand()` to seed the random number generator
-   - `rand()` to generate random numbers
-   - Modulo operator (`%`) to limit range
+3. **Input/Output**:
+   - `cout`/`cin` for console interaction
+   - Formatted output with `iomanip`
+   - Input validation
 
-6. **Variable Manipulation**
-   - Increment operator (`++`)
-   - Variable assignment
+4. **Functions & Methods**:
+   - Parameter passing
+   - Return values
+   - Method overloading concepts
 
-## 💻 Code Overview
+## 💻 Code Architecture
 
-The game uses a simple `do-while` loop that:
-1. Prompts the user for a guess
-2. Reads the input
-3. Increments the attempt counter
-4. Compares the guess to the secret number
-5. Provides feedback
-6. Continues until the guess is correct
+### **Game Structure**
+```cpp
+class GameName {
+private:
+    // Game state variables
+    mt19937 rng;              // Random number generator
+    string playerName;        // Player personalization
+    // Game-specific variables...
+    
+public:
+    GameName(const string& name);  // Constructor
+    void run();               // Main game loop
+    // Game-specific methods...
+};
+```
 
-All code includes detailed comments explaining each concept for learning purposes.
+### **Main Application Flow**
+1. **Welcome & Name Input**: Personalize the experience
+2. **Main Menu Loop**: Choose between games
+3. **Game Execution**: Run selected game
+4. **Return to Menu**: Seamless game switching
+
+## � Future Enhancements
+
+### **Number Guessing Game**
+- Multiple difficulty levels (different ranges)
+- High score tracking
+- Hint system
+
+### **Math Master Game**
+- Timed challenges
+- Multiplication tables practice
+- Fraction and decimal problems
+- Leaderboard system
+
+### **Dungeon Crawler Game**
+- **Combat System**: Battle monsters with turn-based combat
+- **Exploration**: Navigate through procedurally generated dungeons  
+- **Inventory System**: Collect and manage items
+- **Experience & Leveling**: Character progression
+- **Treasure & Loot**: Find gold and equipment upgrades
+- **Save/Load System**: Persistent character data
+
+### **General Enhancements**
+- **Cross-platform Support**: Linux and macOS compatibility
+- **Graphics Interface**: Upgrade from console to GUI
+- **Multiplayer Features**: Network gameplay options
+- **Configuration System**: Save player preferences
 
 ## 🐛 Troubleshooting
 
-### "cl is not recognized"
-- Make sure you're using the **Developer Command Prompt** for Visual Studio
-- Or add MSVC to your PATH (see setup instructions)
+### **Compilation Issues**
 
-### "g++ is not recognized"
-- Install MinGW-w64 or MSYS2
-- Add the `bin` folder to your system PATH
-- Restart your terminal after adding to PATH
+#### "g++ is not recognized"
+- Install MinGW-w64 or add g++ to your PATH:
+  ```bash
+  set PATH=%PATH%;C:\msys64\mingw64\bin
+  ```
+- Or use the full path: `C:\msys64\mingw64\bin\g++.exe`
 
-### Compilation Errors
-- Ensure you have the C++ workload installed in Visual Studio
-- Check that you're using a compatible compiler version
-- Make sure all `#include` statements are correct
+#### "cl is not recognized" 
+- Use the **Developer Command Prompt** for Visual Studio
+- Or add MSVC to your PATH
 
-### Program Runs but Doesn't Work Correctly
-- Check that you're entering valid integers (0-10)
-- Ensure the random number generator is seeded (should be automatic)
+#### Compilation Errors
+- Ensure you have C++11 support: `g++ -std=c++11 -o games.exe CPP_console_app.cpp`
+- Check all `#include` statements are correct
+- Make sure you're in the correct directory
 
-## 📝 Future Enhancements
+### **Runtime Issues**
 
-Ideas to extend this project:
-- Add difficulty levels (different number ranges)
-- Limit the number of attempts
-- Add a "play again" feature
-- Keep track of best score
-- Add input validation for non-numeric input
-- Use more modern C++ features (C++11 random library instead of `rand()`)
+#### Program Crashes on Startup
+- Check that you're entering valid input when prompted
+- Try compiling with debug info: `g++ -g -o games.exe CPP_console_app.cpp`
+
+#### Games Don't Work Correctly
+- Ensure you're entering valid numbers when prompted
+- Check that random number generator is working (should be automatic)
+
+#### Visual Studio Project Issues
+- The `.vcxproj` files may have compatibility issues
+- Use g++ compilation method instead
+- Or create a new Visual Studio project and copy the `.cpp` file
 
 ## 📄 License
 
@@ -153,8 +257,12 @@ This is a learning project - feel free to use and modify as you wish!
 ## 🤝 Contributing
 
 This is a personal learning project, but suggestions and improvements are welcome!
+- Fork the repository
+- Make your improvements  
+- Submit a pull request
+- Share your ideas for new games or features!
 
 ---
 
-**Happy Coding!** 🎉
+**Happy Gaming and Coding!** 🎉🎮🎯
 
