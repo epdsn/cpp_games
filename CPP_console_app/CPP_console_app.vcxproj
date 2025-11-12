@@ -139,7 +139,18 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="CPP_console_app.cpp" />
+    <ClCompile Include="main.cpp" />
+    <ClCompile Include="number_guessing_game.cpp" />
+    <ClCompile Include="math_game.cpp" />
+    <ClCompile Include="dungeon_crawler_game.cpp" />
+    <ClCompile Include="wordle_game.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="game_utils.h" />
+    <ClInclude Include="number_guessing_game.h" />
+    <ClInclude Include="math_game.h" />
+    <ClInclude Include="dungeon_crawler_game.h" />
+    <ClInclude Include="wordle_game.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
