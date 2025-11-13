@@ -206,9 +206,117 @@ void DungeonCrawlerGame::run() {
     allocateStatPoints();
     displayCharacterSheet();
     
-    cout << "\n### Adventure awaits! Character creation complete!" << endl;
-    cout << "### (Dungeon exploration features coming soon!)" << endl;
+    // --- Level 1: Entrance to the Cave of Evil ---
+    cout << "\n### LEVEL 1: CAVE ENTRANCE ###" << endl;
+    cout << "You find yourself at the entrance of the Cave of Evil." << endl;
+    cout << "A strange compulsion tugs at your chest, urging you inside." << endl;
+    cout << "You step into the cave; it's pitch dark. What do you do next?" << endl << endl;
+
+    // ASCII art: skull-like cave entrance
+    cout << R"(
+               .-''''-.
+             .'  .--.  '.
+            /   ;    \   ;   -.
+           ;   ;      -   \     ;
+      ;   ;   ;  .--.  ;   ;  |
+        | |   | ;    ; |   |
+       .--|   | ;     ;|   |;--.
+    - ;   ;   ;        ;   ;     ;
+
+      The dark endtrance to the Cave of Evil stares at you ...
+    )" << endl;
+
+    cout << "1. Light a torch and proceed carefully." << endl;
+    cout << "2. Charge into the darkness with your weapon drawn." << endl;
+    cout << "3. Shout to see what answers the echo." << endl;
+    cout << "4. Retreat to town (end adventure for now)." << endl;
+    cout << "Enter your choice (1-4): ";
+    
+    // Read a line so mixing previous cin doesn't break input
+    string line;
+    getline(cin, line); // consume leftover newline
+    int choice = 0;
+    while (true) {
+        if (!getline(cin, line)) return; // EOF safety
+        if (line.empty()) {
+            cout << "Please enter 1-4: ";
+            continue;
+        }
+        try {
+            choice = stoi(line);
+            if (choice >= 1 && choice <= 4) break;
+        } catch (...) {}
+        cout << "Invalid input. Enter 1-4: ";
+    }
+    
+    // Random helper
+    uniform_int_distribution<int> smallRand(1, 6);
+    
+    switch (choice) {
+        case 1: { // Light torch
+            cout << "\nYou light a torch and step forward, the tunnel reveals uneven stones and old markings." << endl;
+            int foundGold = 5 + smallRand(rng); // 6-11 gold
+            gold += foundGold;
+            cout << "Hidden in a crack you find a small pouch containing " << foundGold << " gold!" << endl;
+            cout << "You proceed safely deeper, senses alert." << endl;
+            break;
+        }
+        case 2: { // Charge in
+            cout << "\nYou charge into the dark, sword raised. Something latches onto your leg!" << endl;
+            int damage = smallRand(rng) + (level / 1); // small damage
+            health -= damage;
+            cout << "You struggle free but take " << damage << " damage. (Health: " << max(0, health) << "/" << maxHealth << ")" << endl;
+            if (health <= 0) {
+                cout << "\nYou succumb to your wounds in the darkness. GAME OVER." << endl;
+                cout << "Press Enter to return to main menu...";
+                cin.get();
+                return;
+            }
+            cout << "Bruised but alive, you press on." << endl;
+            break;
+        }
+        case 3: { // Shout
+            cout << "\nYou let out a shout and the cave answers with a chorus of clicks and a distant scuttling." << endl;
+            int reaction = smallRand(rng);
+            if (reaction >= 5) {
+                cout << "The noise draws a scavenger creature, but it startsle-runs and drops an old amulet." << endl;
+                cout << "You pick up the amulet (+1 Magic)." << endl;
+                magic += 1;
+            } else {
+                cout << "The echo wakes a nest of bats that graze you as they pass." << endl;
+                int damage = 1 + smallRand(rng) % 2;
+                health -= damage;
+                cout << "You take " << damage << " damage. (Health: " << max(0, health) << "/" << maxHealth << ")" << endl;
+                if (health <= 0) {
+                    cout << "\nYou fall in the dark. GAME OVER." << endl;
+                    cout << "Press Enter to return to main menu...";
+                    cin.get();
+                    return;
+                }
+            }
+            break;
+        }
+        case 4: { // Retreat
+            cout << "\nYou decide discretion is the better part of valor and return to town for now." << endl;
+            cout << "Level 1 aborted. Press Enter to return to main menu...";
+            cin.get();
+            return;
+        }
+        default:
+            break;
+    }
+    
+    // Level complete - advance
+    level++;
+    cout << "\n### LEVEL 1 COMPLETE! ###" << endl;
+    cout << "You survived the cave entrance and are ready for the next challenge." << endl;
+    cout << "Current Stats - Health: " << health << "/" << maxHealth << ", Strength: " << strength << ", Magic: " << magic << ", Gold: " << gold << endl;
+    cout << "Advancing to Level " << level << "..." << endl;
+    cout << "Press Enter to continue to the next phase...";
+    cin.get();
+    
+    // Next phase placeholder (actual exploration/encounters to be implemented)
+    cout << "\n(Next phase not implemented yet — dungeon exploration coming soon.)" << endl;
     cout << "Press Enter to return to main menu...";
-    cin.ignore();
     cin.get();
 }
