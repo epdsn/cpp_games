@@ -18,6 +18,20 @@ private:
     void playRound(int difficulty);
     void displayStats();
     
+    // 4th grade level methods
+    void playDecimalRound();
+    void playWordProblemRound();
+    pair<double, double> generateDecimals();
+    double calculateDecimalAnswer(double num1, double num2, char op);
+    void generateWordProblem(string& problem, int& answer);
+    bool isCorrectDecimal(double userAnswer, double correctAnswer);
+    
+    // Algebra methods
+    void playAlgebraRound();
+    void generateAlgebraProblem(string& equation, int& answer);
+    void generateLinearEquation(string& equation, int& answer);
+    void generateSimpleEquation(string& equation, int& answer);
+    
 public:
     MathGame();
     void run();
