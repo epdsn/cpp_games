@@ -8,7 +8,10 @@ DungeonCrawlerGame::DungeonCrawlerGame(const string& name) :
     health(100), 
     maxHealth(100),
     level(1),
-    gold(50) {}
+    gold(50),
+    armor(0),
+    healthPotions(0),
+    manaPotions(0) {}
 
 void DungeonCrawlerGame::displayWelcome() {
     cout << "\n### WELCOME TO DUNGEON CRAWLER, " << playerName << "! ###" << endl;
@@ -191,6 +194,9 @@ void DungeonCrawlerGame::displayCharacterSheet() {
     cout << "### Health: " << health << "/" << maxHealth << endl;
     cout << "### Level: " << level << endl;
     cout << "### Gold: " << gold << endl;
+    cout << "### Armor: " << armor << endl;
+    cout << "### Health Potions: " << healthPotions << endl;
+    cout << "### Mana Potions: " << manaPotions << endl;
     cout << "############################################" << endl;
     
     cout << "\n### " << playerName << " the " << characterClass << " is ready for adventure!" << endl;
@@ -199,13 +205,96 @@ void DungeonCrawlerGame::displayCharacterSheet() {
     cin.get();
 }
 
+void DungeonCrawlerGame::visitShop() {
+    cout << "\n### TOWN SHOP ###" << endl;
+    cout << "================" << endl;
+    cout << "Welcome to the traveler\'s shop. You have " << gold << " gold." << endl;
+    cout << "Items for sale:" << endl;
+    cout << "1. Leather Armor (+10 max health) - 25 gold" << endl;
+    cout << "2. Iron Armor (+25 max health) - 50 gold" << endl;
+    cout << "3. Health Potion (+50 health when used) - 10 gold" << endl;
+    cout << "4. Mana Potion (+5 magic when used) - 8 gold" << endl;
+    cout << "5. Leave shop" << endl;
+    
+    // ensure leftover newline from previous inputs doesn't interfere
+    string line;
+    getline(cin, line);
+
+    while (true) {
+        cout << "Enter choice (1-5): ";
+        if (!getline(cin, line)) return; // EOF safety
+        if (line.empty()) continue;
+        int choice = 0;
+        try { choice = stoi(line); } catch (...) { cout << "Invalid input." << endl; continue; }
+        switch (choice) {
+            case 1:
+                if (gold >= 25) {
+                    gold -= 25;
+                    armor += 10;
+                    maxHealth += 10;
+                    health += 10;
+                    cout << "You purchased Leather Armor. Max health increased by 10." << endl;
+                } else {
+                    cout << "Not enough gold." << endl;
+                }
+                break;
+            case 2:
+                if (gold >= 50) {
+                    gold -= 50;
+                    armor += 25;
+                    maxHealth += 25;
+                    health += 25;
+                    cout << "You purchased Iron Armor. Max health increased by 25." << endl;
+                } else {
+                    cout << "Not enough gold." << endl;
+                }
+                break;
+            case 3:
+                if (gold >= 10) {
+                    gold -= 10;
+                    healthPotions += 1;
+                    cout << "You purchased a Health Potion." << endl;
+                } else {
+                    cout << "Not enough gold." << endl;
+                }
+                break;
+            case 4:
+                if (gold >= 8) {
+                    gold -= 8;
+                    manaPotions += 1;
+                    cout << "You purchased a Mana Potion." << endl;
+                } else {
+                    cout << "Not enough gold." << endl;
+                }
+                break;
+            case 5:
+                cout << "Leaving shop." << endl;
+                return;
+            default:
+                cout << "Invalid choice." << endl;
+                break;
+        }
+    }
+}
+
 void DungeonCrawlerGame::run() {
     displayWelcome();
     chooseClass();
     chooseWeapon();
     allocateStatPoints();
     displayCharacterSheet();
-    
+
+    // Offer shop visit before adventure
+    cout << "\nWould you like to visit the town shop before entering the dungeon? (y/n): ";
+    string yn;
+    getline(cin, yn); // consume newline
+    getline(cin, yn);
+    if (!yn.empty() && (yn[0] == 'y' || yn[0] == 'Y')) {
+        visitShop();
+        cout << "Press Enter to continue...";
+        cin.get();
+    }
+
     // --- Level 1: Entrance to the Cave of Evil ---
     cout << "\n### LEVEL 1: CAVE ENTRANCE ###" << endl;
     cout << "You find yourself at the entrance of the Cave of Evil." << endl;

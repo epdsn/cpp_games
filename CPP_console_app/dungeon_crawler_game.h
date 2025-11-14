@@ -15,12 +15,18 @@ private:
     int maxHealth;
     int level;
     int gold;
+
+    // inventory / equipment
+    int armor; // additional armor value (increases maxHealth)
+    int healthPotions; // count of health potions
+    int manaPotions; // count of mana potions
     
     void displayWelcome();
     void chooseClass();
     void chooseWeapon();
     void allocateStatPoints();
     void displayCharacterSheet();
+    void visitShop();
     
 public:
     DungeonCrawlerGame(const string& name);
