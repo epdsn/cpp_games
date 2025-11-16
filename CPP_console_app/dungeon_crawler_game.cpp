@@ -216,13 +216,11 @@ void DungeonCrawlerGame::visitShop() {
     cout << "4. Mana Potion (+5 magic when used) - 8 gold" << endl;
     cout << "5. Leave shop" << endl;
     
-    // ensure leftover newline from previous inputs doesn't interfere
+    // Town shop purchase loop
     string line;
-    getline(cin, line);
-
     while (true) {
         cout << "Enter choice (1-5): ";
-        if (!getline(cin, line)) return; // EOF safety
+        if (!getline(cin, line)) return;
         if (line.empty()) continue;
         int choice = 0;
         try { choice = stoi(line); } catch (...) { cout << "Invalid input." << endl; continue; }
@@ -231,7 +229,7 @@ void DungeonCrawlerGame::visitShop() {
                 if (gold >= 25) {
                     gold -= 25;
                     armor += 10;
-                    maxHealth += 10;
+                    maxHealth += 10;    string line;
                     health += 10;
                     cout << "You purchased Leather Armor. Max health increased by 10." << endl;
                 } else {
@@ -285,9 +283,8 @@ void DungeonCrawlerGame::run() {
     displayCharacterSheet();
 
     // Offer shop visit before adventure
-    cout << "\nWould you like to visit the town shop before entering the dungeon? (y/n): ";
+    cout << "\nWould you like to visit the town shop before entering the dungeon? (y/n): " << endl;
     string yn;
-    getline(cin, yn); // consume newline
     getline(cin, yn);
     if (!yn.empty() && (yn[0] == 'y' || yn[0] == 'Y')) {
         visitShop();
@@ -319,11 +316,10 @@ void DungeonCrawlerGame::run() {
     cout << "2. Charge into the darkness with your weapon drawn." << endl;
     cout << "3. Shout to see what answers the echo." << endl;
     cout << "4. Retreat to town (end adventure for now)." << endl;
-    cout << "Enter your choice (1-4): ";
+    cout << "Enter your choice (1-4): " << endl;
     
     // Read a line so mixing previous cin doesn't break input
     string line;
-    getline(cin, line); // consume leftover newline
     int choice = 0;
     while (true) {
         if (!getline(cin, line)) return; // EOF safety
@@ -405,7 +401,7 @@ void DungeonCrawlerGame::run() {
     cin.get();
     
     // Next phase placeholder (actual exploration/encounters to be implemented)
-    cout << "\n(Next phase not implemented yet — dungeon exploration coming soon.)" << endl;
+    cout << "\n(Next phase not implemented yet ï¿½ dungeon exploration coming soon.)" << endl;
     cout << "Press Enter to return to main menu...";
     cin.get();
 }
