@@ -390,6 +390,11 @@ void DungeonCrawlerGame::run() {
         default:
             break;
     }
+
+
+    cout << "You look up and see a skeleton with a sword in hand chargin towards you." << endl;
+    cout << "He lifts his arm and swings his sword towards you." << endl;
+
     
     // Level complete - advance
     level++;
