@@ -1,7 +1,7 @@
 #include "dungeon_crawler_game.h"
 
 DungeonCrawlerGame::DungeonCrawlerGame(const string& name) : 
-    rng(time(nullptr)), 
+    rng(static_cast<unsigned int>(time(nullptr))), 
     playerName(name), 
     strength(0), 
     magic(0), 
@@ -229,7 +229,7 @@ void DungeonCrawlerGame::visitShop() {
                 if (gold >= 25) {
                     gold -= 25;
                     armor += 10;
-                    maxHealth += 10;    string line;
+                    maxHealth += 10;
                     health += 10;
                     cout << "You purchased Leather Armor. Max health increased by 10." << endl;
                 } else {
@@ -309,7 +309,7 @@ void DungeonCrawlerGame::run() {
        .--|   | ;     ;|   |;--.
     - ;   ;   ;        ;   ;     ;
 
-      The dark endtrance to the Cave of Evil stares at you ...
+      The dark entrance to the Cave of Evil stares at you ...
     )" << endl;
 
     cout << "1. Light a torch and proceed carefully." << endl;
@@ -317,7 +317,7 @@ void DungeonCrawlerGame::run() {
     cout << "3. Shout to see what answers the echo." << endl;
     cout << "4. Retreat to town (end adventure for now)." << endl;
     cout << "Enter your choice (1-4): " << endl;
-    
+
     // Read a line so mixing previous cin doesn't break input
     string line;
     int choice = 0;
@@ -333,10 +333,10 @@ void DungeonCrawlerGame::run() {
         } catch (...) {}
         cout << "Invalid input. Enter 1-4: ";
     }
-    
+
     // Random helper
     uniform_int_distribution<int> smallRand(1, 6);
-    
+
     switch (choice) {
         case 1: { // Light torch
             cout << "\nYou light a torch and step forward, the tunnel reveals uneven stones and old markings." << endl;
@@ -364,7 +364,7 @@ void DungeonCrawlerGame::run() {
             cout << "\nYou let out a shout and the cave answers with a chorus of clicks and a distant scuttling." << endl;
             int reaction = smallRand(rng);
             if (reaction >= 5) {
-                cout << "The noise draws a scavenger creature, but it startsle-runs and drops an old amulet." << endl;
+                cout << "The noise draws a scavenger creature, but it startle-runs and drops an old amulet." << endl;
                 cout << "You pick up the amulet (+1 Magic)." << endl;
                 magic += 1;
             } else {
@@ -391,11 +391,90 @@ void DungeonCrawlerGame::run() {
             break;
     }
 
-
-    cout << "You look up and see a skeleton with a sword in hand chargin towards you." << endl;
+    // Proceed to encounter
+    cout << "\nAs you venture deeper into the cave, the air grows colder and a faint clinking sound echoes ahead." << endl;
+    cout << "You look up and see a skeleton with a sword in hand charging towards you." << endl;
     cout << "He lifts his arm and swings his sword towards you." << endl;
 
-    
+    cout << "\n### COMBAT ENCOUNTER! ###" << endl;
+    cout << "You must defend yourself!" << endl;
+    int enemyHealth = 30 + (level * 10);
+    cout << "Enemy Skeleton Health: " << enemyHealth << endl;
+
+    // Combat choices
+    cout << "\nChoose your action:" << endl;
+    cout << "1. Attack with your weapon" << endl;
+    cout << "2. Use a health potion" << endl;
+    cout << "3. Use a mana potion" << endl;
+    cout << "Enter your choice (1-3): " << endl;
+
+    // read combat choice
+    string combatLine;
+    int combatChoice = 0;
+    while (true) {
+        if (!getline(cin, combatLine)) return; // EOF safety
+        if (combatLine.empty()) {
+            cout << "Please enter 1-3: ";
+            continue;
+        }
+        try {
+            combatChoice = stoi(combatLine);
+            if (combatChoice >= 1 && combatChoice <= 3) break;
+        } catch (...) {}
+        cout << "Invalid input. Enter 1-3: ";
+    }
+
+    switch (combatChoice) {
+        case 1: { // Attack
+            int playerDamage = strength + smallRand(rng);
+            enemyHealth -= playerDamage;
+            cout << "\nYou strike the skeleton for " << playerDamage << " damage!" << endl;
+            if (enemyHealth <= 0) {
+                cout << "The skeleton crumbles to dust. You are victorious!" << endl;
+                int lootGold = 10 + smallRand(rng) * 2;
+                gold += lootGold;
+                cout << "You find " << lootGold << " gold on the skeleton." << endl;
+            } else {
+                // Enemy attacks back
+                int enemyDamage = 5 + smallRand(rng);
+                health -= enemyDamage;
+                cout << "The skeleton swings back, dealing " << enemyDamage << " damage to you! (Health: " << max(0, health) << "/" << maxHealth << ")" << endl;
+                if (health <= 0) {
+                    cout << "\nYou have been defeated by the skeleton. GAME OVER." << endl;
+                    cout << "Press Enter to return to main menu...";
+                    cin.get();
+                    return;
+                }
+            }
+            break;
+        }
+        case 2: { // Health potion
+            if (healthPotions > 0) {
+                healthPotions--;
+                int healAmount = 50;
+                health = min(maxHealth, health + healAmount);
+                cout << "\nYou drink a health potion and recover " << healAmount << " health! (Health: " << health << "/" << maxHealth << ")" << endl;
+            } else {
+                cout << "\nYou have no health potions left!" << endl;
+            }
+            break;
+        }
+        case 3: { // Mana potion
+            if (manaPotions > 0) {
+                manaPotions--;
+                int manaAmount = 5;
+                magic += manaAmount;
+                cout << "\nYou drink a mana potion and recover " << manaAmount << " magic! (Magic: " << magic << ")" << endl;
+            } else {
+                cout << "\nYou have no mana potions left!" << endl;
+            }
+            break;
+        }
+        default:
+            cout << "\nInvalid choice!" << endl;
+            break;
+    }
+
     // Level complete - advance
     level++;
     cout << "\n### LEVEL 1 COMPLETE! ###" << endl;
@@ -404,9 +483,9 @@ void DungeonCrawlerGame::run() {
     cout << "Advancing to Level " << level << "..." << endl;
     cout << "Press Enter to continue to the next phase...";
     cin.get();
-    
+
     // Next phase placeholder (actual exploration/encounters to be implemented)
-    cout << "\n(Next phase not implemented yet � dungeon exploration coming soon.)" << endl;
+    cout << "\n(Next phase not implemented yet - dungeon exploration coming soon.)" << endl;
     cout << "Press Enter to return to main menu...";
     cin.get();
 }
