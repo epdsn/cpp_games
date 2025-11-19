@@ -20,6 +20,10 @@ private:
     int armor; // additional armor value (increases maxHealth)
     int healthPotions; // count of health potions
     int manaPotions; // count of mana potions
+
+    // quest items / chapter items
+    bool hasEyeJewel;
+    bool hasSpiralStone;
     
     void displayWelcome();
     void chooseClass();

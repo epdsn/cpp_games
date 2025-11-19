@@ -11,7 +11,9 @@ DungeonCrawlerGame::DungeonCrawlerGame(const string& name) :
     gold(50),
     armor(0),
     healthPotions(0),
-    manaPotions(0) {}
+    manaPotions(0),
+    hasEyeJewel(false),
+    hasSpiralStone(false) {}
 
 void DungeonCrawlerGame::displayWelcome() {
     cout << "\n### WELCOME TO DUNGEON CRAWLER, " << playerName << "! ###" << endl;
@@ -401,65 +403,68 @@ void DungeonCrawlerGame::run() {
     int enemyHealth = 30 + (level * 10);
     cout << "Enemy Skeleton Health: " << enemyHealth << endl;
 
-    // Combat choices
-    cout << "\nChoose your action:" << endl;
-    cout << "1. Attack with your weapon" << endl;
-    cout << "2. Use a health potion" << endl;
-    cout << "3. Use a mana potion" << endl;
-    cout << "Enter your choice (1-3): " << endl;
+    int turn = 1;
+    uniform_int_distribution<int> enemyAtkRand(2, 6);
 
-    // read combat choice
-    string combatLine;
-    int combatChoice = 0;
-    while (true) {
-        if (!getline(cin, combatLine)) return; // EOF safety
-        if (combatLine.empty()) {
-            cout << "Please enter 1-3: ";
-            continue;
+    while (enemyHealth > 0 && health > 0) {
+        cout << "\n--- Turn " << turn << " ---" << endl;
+        cout << "Your Health: " << health << "/" << maxHealth << "  |  Magic: " << magic << "  |  Health potions: " << healthPotions << "  |  Mana potions: " << manaPotions << endl;
+        cout << "Enemy Health: " << enemyHealth << endl;
+
+        bool enemyBackingAway = (turn % 3 == 0);
+        if (enemyBackingAway) {
+            cout << "The skeleton snarls and momentarily backs away, giving you a brief reprieve." << endl;
         }
-        try {
-            combatChoice = stoi(combatLine);
-            if (combatChoice >= 1 && combatChoice <= 3) break;
-        } catch (...) {}
-        cout << "Invalid input. Enter 1-3: ";
-    }
 
-    switch (combatChoice) {
-        case 1: { // Attack
-            int playerDamage = strength + smallRand(rng);
-            enemyHealth -= playerDamage;
-            cout << "\nYou strike the skeleton for " << playerDamage << " damage!" << endl;
-            if (enemyHealth <= 0) {
-                cout << "The skeleton crumbles to dust. You are victorious!" << endl;
-                int lootGold = 10 + smallRand(rng) * 2;
-                gold += lootGold;
-                cout << "You find " << lootGold << " gold on the skeleton." << endl;
+        cout << "\nChoose your action:" << endl;
+        cout << "1. Attack with your weapon" << endl;
+        cout << "2. Use a health potion" << endl;
+        cout << "3. Use a mana potion" << endl;
+        cout << "Enter your choice (1-3): ";
+
+        // read combat choice
+        string combatLine;
+        int combatChoice = 0;
+        while (true) {
+            if (!getline(cin, combatLine)) return; // EOF safety
+            if (combatLine.empty()) {
+                cout << "Please enter 1-3: ";
+                continue;
+            }
+            try {
+                combatChoice = stoi(combatLine);
+                if (combatChoice >= 1 && combatChoice <= 3) break;
+            } catch (...) {}
+            cout << "Invalid input. Enter 1-3: ";
+        }
+
+        // Player action
+        if (combatChoice == 1) {
+            if (enemyBackingAway) {
+                cout << "You lunge forward but the skeleton has backed away — your attack misses!" << endl;
             } else {
-                // Enemy attacks back
-                int enemyDamage = 5 + smallRand(rng);
-                health -= enemyDamage;
-                cout << "The skeleton swings back, dealing " << enemyDamage << " damage to you! (Health: " << max(0, health) << "/" << maxHealth << ")" << endl;
-                if (health <= 0) {
-                    cout << "\nYou have been defeated by the skeleton. GAME OVER." << endl;
-                    cout << "Press Enter to return to main menu...";
-                    cin.get();
-                    return;
+                int playerDamage = strength + smallRand(rng);
+                enemyHealth -= playerDamage;
+                cout << "\nYou strike the skeleton for " << playerDamage << " damage!" << endl;
+                if (enemyHealth <= 0) {
+                    cout << "The skeleton crumbles to dust. You are victorious!" << endl;
+                    int lootGold = 10 + smallRand(rng) * 2;
+                    gold += lootGold;
+                    cout << "You find " << lootGold << " gold on the skeleton." << endl;
+                    break;
                 }
             }
-            break;
-        }
-        case 2: { // Health potion
+        } else if (combatChoice == 2) {
             if (healthPotions > 0) {
                 healthPotions--;
                 int healAmount = 50;
+                int prev = health;
                 health = min(maxHealth, health + healAmount);
-                cout << "\nYou drink a health potion and recover " << healAmount << " health! (Health: " << health << "/" << maxHealth << ")" << endl;
+                cout << "\nYou drink a health potion and recover " << (health - prev) << " health! (Health: " << health << "/" << maxHealth << ")" << endl;
             } else {
                 cout << "\nYou have no health potions left!" << endl;
             }
-            break;
-        }
-        case 3: { // Mana potion
+        } else if (combatChoice == 3) {
             if (manaPotions > 0) {
                 manaPotions--;
                 int manaAmount = 5;
@@ -468,14 +473,237 @@ void DungeonCrawlerGame::run() {
             } else {
                 cout << "\nYou have no mana potions left!" << endl;
             }
-            break;
         }
-        default:
-            cout << "\nInvalid choice!" << endl;
-            break;
+
+        // Enemy turn (only attacks if not backing away and still alive)
+        if (enemyHealth > 0 && !enemyBackingAway) {
+            int enemyDamage = 5 + enemyAtkRand(rng);
+            health -= enemyDamage;
+            cout << "The skeleton swings back, dealing " << enemyDamage << " damage to you! (Health: " << max(0, health) << "/" << maxHealth << ")" << endl;
+            if (health <= 0) {
+                cout << "\nYou have been defeated by the skeleton. GAME OVER." << endl;
+                cout << "Press Enter to return to main menu...";
+                cin.get();
+                return;
+            }
+        } else if (enemyHealth > 0 && enemyBackingAway) {
+            cout << "The skeleton keeps its distance, watching you warily." << endl;
+        }
+
+        turn++;
     }
 
-    // Level complete - advance
+    if (health > 0 && enemyHealth <= 0) {
+        // Player defeated the skeleton — continue deeper into the cave
+        cout << "\nYou take a moment to catch your breath and loot the remains." << endl;
+        cout << "The tunnel narrows and the air grows damper as you move deeper, torchlight flickering on the walls." << endl;
+        cout << "A rustling sound grows louder ahead. You lead with your torch..." << endl;
+        cout << "Suddenly, a giant spider drops from the ceiling and lands before you!" << endl;
+
+        // --- Giant Spider Encounter ---
+        int spiderHealth = 50 + (level * 15);
+        cout << "A GIANT SPIDER appears!" << endl;
+        cout << "Spider Health: " << spiderHealth << endl;
+
+        uniform_int_distribution<int> spiderAtkRand(4, 10);
+        uniform_int_distribution<int> webChance(1, 100);
+        bool webbed = false; // if true, player's attack will miss (struggles to free)
+        int spiderTurn = 1;
+
+        while (spiderHealth > 0 && health > 0) {
+            cout << "\n--- Spider Turn " << spiderTurn << " ---" << endl;
+            cout << "Your Health: " << health << "/" << maxHealth << "  |  Magic: " << magic << "  |  Health potions: " << healthPotions << "  |  Mana potions: " << manaPotions << endl;
+            cout << "Spider Health: " << spiderHealth << endl;
+
+            if (webbed) {
+                cout << "You are tangled in webbing! Your movements are slowed this turn." << endl;
+            }
+
+            cout << "\nChoose your action:" << endl;
+            cout << "1. Attack with your weapon" << endl;
+            cout << "2. Use a health potion" << endl;
+            cout << "3. Use a mana potion" << endl;
+            cout << "Enter your choice (1-3): ";
+
+            string combatLine;
+            int combatChoice = 0;
+            while (true) {
+                if (!getline(cin, combatLine)) return; // EOF safety
+                if (combatLine.empty()) {
+                    cout << "Please enter 1-3: ";
+                    continue;
+                }
+                try { combatChoice = stoi(combatLine); } catch (...) { cout << "Invalid input. Enter 1-3: "; continue; }
+                if (combatChoice >= 1 && combatChoice <= 3) break;
+            }
+
+            // Player action
+            if (combatChoice == 1) {
+                if (webbed) {
+                    cout << "You struggle at the webbing and try to strike, but the spider's webbing slows your blow — it misses!" << endl;
+                    // escaping attempt reduces webbed flag with some chance
+                    if (webChance(rng) <= 50) {
+                        webbed = false;
+                        cout << "You partially free yourself from the webbing." << endl;
+                    }
+                } else {
+                    int playerDamage = strength + smallRand(rng);
+                    spiderHealth -= playerDamage;
+                    cout << "\nYou slash at the spider for " << playerDamage << " damage!" << endl;
+                    if (spiderHealth <= 0) {
+                        cout << "The giant spider collapses, legs twitching. You have slain it!" << endl;
+                        int lootGold = 20 + smallRand(rng) * 3;
+                        gold += lootGold;
+                        cout << "You gather " << lootGold << " gold and some strange chitin from the corpse." << endl;
+                        break;
+                    }
+                }
+            } else if (combatChoice == 2) {
+                if (healthPotions > 0) {
+                    healthPotions--;
+                    int healAmount = 50;
+                    int prev = health;
+                    health = min(maxHealth, health + healAmount);
+                    cout << "\nYou drink a health potion and recover " << (health - prev) << " health! (Health: " << health << "/" << maxHealth << ")" << endl;
+                } else {
+                    cout << "\nYou have no health potions left!" << endl;
+                }
+            } else if (combatChoice == 3) {
+                if (manaPotions > 0) {
+                    manaPotions--;
+                    int manaAmount = 5;
+                    magic += manaAmount;
+                    cout << "\nYou drink a mana potion and recover " << manaAmount << " magic! (Magic: " << magic << ")" << endl;
+                } else {
+                    cout << "\nYou have no mana potions left!" << endl;
+                }
+            }
+
+            // Spider turn: may web (30% chance) or attack
+            if (spiderHealth > 0) {
+                int chance = webChance(rng);
+                if (!webbed && chance <= 30) {
+                    webbed = true;
+                    cout << "The spider flings sticky webbing and entangles you! You'll be slowed next turn." << endl;
+                } else {
+                    int spiderDamage = spiderAtkRand(rng);
+                    health -= spiderDamage;
+                    cout << "The spider lunges and bites, dealing " << spiderDamage << " damage! (Health: " << max(0, health) << "/" << maxHealth << ")" << endl;
+                    if (health <= 0) {
+                        cout << "\nYou have been killed by the giant spider. GAME OVER." << endl;
+                        cout << "Press Enter to return to main menu...";
+                        cin.get();
+                        return;
+                    }
+                }
+            }
+
+            spiderTurn++;
+        }
+
+        if (health > 0 && spiderHealth <= 0) {
+            cout << "\nAs the spider dies, you notice a tattered scrap of parchment stuck to its webbed legs." << endl;
+            cout << "You pry the parchment free and read hastily scrawled words about the 'Eye Jewel of Orin' and a stone engraved with a spiral like an eye." << endl;
+            cout << "You find a small spiral-shaped stone caught in the web and a filthy gem that glints like an eye." << endl;
+            hasSpiralStone = true;
+            hasEyeJewel = true;
+            cout << "You place the spiral stone and the eye-like jewel into your pouch." << endl;
+
+            cout << "\nThe path ahead winds back to town. Thoughts turn to Bladimir Okenstall, a trader who might know more about these artifacts." << endl;
+
+            // End of Chapter choices
+            cout << "\nHow will you proceed?" << endl;
+            cout << "1. Create a camp here and rest until morning." << endl;
+            cout << "2. Head to town now to seek Bladimir Okenstall (it's dark and raining)." << endl;
+            cout << "Enter your choice (1-2): ";
+
+            string endLine;
+            int endChoice = 0;
+            while (true) {
+                if (!getline(cin, endLine)) return; // EOF safety
+                if (endLine.empty()) { cout << "Enter 1 or 2: "; continue; }
+                try { endChoice = stoi(endLine); } catch (...) { cout << "Invalid. Enter 1 or 2: "; continue; }
+                if (endChoice == 1 || endChoice == 2) break;
+            }
+
+            if (endChoice == 1) {
+                cout << "\nYou set up a small camp, tend to wounds, and sleep until dawn. The path at morning is clear." << endl;
+                cout << "You decide to head to town in the morning to find Bladimir." << endl;
+                cout << "Chapter 1 complete. Press Enter to return to main menu...";
+                cin.get();
+                return;
+            } else {
+                cout << "\nYou brave the rain and make for town under cover of darkness." << endl;
+                cout << "As you approach the outskirts, shadowy figures leap from behind rocks — goblins!" << endl;
+
+                // Simple goblin ambush encounter
+                int goblinHealth = 20 + (level * 5);
+                uniform_int_distribution<int> gobAtk(3, 7);
+                int gobTurn = 1;
+
+                while (goblinHealth > 0 && health > 0) {
+                    cout << "\n--- Goblin Ambush Turn " << gobTurn << " ---" << endl;
+                    cout << "Your Health: " << health << "/" << maxHealth << "  |  Health potions: " << healthPotions << endl;
+                    cout << "Goblin Health: " << goblinHealth << endl;
+                    cout << "\nChoose action: 1=Attack, 2=Use Health Potion" << endl;
+
+                    string gLine;
+                    int gChoice = 0;
+                    while (true) {
+                        if (!getline(cin, gLine)) return;
+                        if (gLine.empty()) { cout << "Enter 1 or 2: "; continue; }
+                        try { gChoice = stoi(gLine); } catch (...) { cout << "Invalid. Enter 1 or 2: "; continue; }
+                        if (gChoice == 1 || gChoice == 2) break;
+                    }
+
+                    if (gChoice == 1) {
+                        int dmg = strength + smallRand(rng);
+                        goblinHealth -= dmg;
+                        cout << "You swing and deal " << dmg << " damage to the goblin!" << endl;
+                        if (goblinHealth <= 0) {
+                            cout << "The goblin falls back into the mud. You survived the ambush." << endl;
+                            int loot = 5 + smallRand(rng);
+                            gold += loot;
+                            cout << "You scavenge " << loot << " gold from the corpse." << endl;
+                            break;
+                        }
+                    } else {
+                        if (healthPotions > 0) {
+                            healthPotions--;
+                            int prev = health;
+                            health = min(maxHealth, health + 50);
+                            cout << "You use a health potion and recover " << (health - prev) << " health." << endl;
+                        } else {
+                            cout << "You have no health potions!" << endl;
+                        }
+                    }
+
+                    // Goblin attacks
+                    if (goblinHealth > 0) {
+                        int dmg = gobAtk(rng);
+                        health -= dmg;
+                        cout << "The goblin slashes you for " << dmg << " damage! (Health: " << max(0, health) << "/" << maxHealth << ")" << endl;
+                        if (health <= 0) {
+                            cout << "\nYou were killed by the goblin. GAME OVER." << endl;
+                            cout << "Press Enter to return to main menu...";
+                            cin.get();
+                            return;
+                        }
+                    }
+
+                    gobTurn++;
+                }
+
+                cout << "\nYou limp into town, bruised and soaked, with the Eye Jewel and Spiral Stone safely in your pouch." << endl;
+                cout << "You will seek out Bladimir Okenstall at the market in the morning." << endl;
+                cout << "Chapter 1 complete. Press Enter to return to main menu...";
+                cin.get();
+                return;
+            }
+        }
+    }
+
+    // Level complete - advance (fallback)
     level++;
     cout << "\n### LEVEL 1 COMPLETE! ###" << endl;
     cout << "You survived the cave entrance and are ready for the next challenge." << endl;
