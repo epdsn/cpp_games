@@ -285,7 +285,7 @@ void DungeonCrawlerGame::run() {
     displayCharacterSheet();
 
     // Offer shop visit before adventure
-    cout << "\nWould you like to visit the town shop before entering the dungeon? (y/n): " << endl;
+    cout << "\nWould you like to visit the town shop before starting your adventure? (y/n): " << endl;
     string yn;
     getline(cin, yn);
     if (!yn.empty() && (yn[0] == 'y' || yn[0] == 'Y')) {
@@ -441,7 +441,7 @@ void DungeonCrawlerGame::run() {
         // Player action
         if (combatChoice == 1) {
             if (enemyBackingAway) {
-                cout << "You lunge forward but the skeleton has backed away — your attack misses!" << endl;
+                cout << "You lunge forward but the skeleton has backed away ï¿½ your attack misses!" << endl;
             } else {
                 int playerDamage = strength + smallRand(rng);
                 enemyHealth -= playerDamage;
@@ -494,7 +494,7 @@ void DungeonCrawlerGame::run() {
     }
 
     if (health > 0 && enemyHealth <= 0) {
-        // Player defeated the skeleton — continue deeper into the cave
+        // Player defeated the skeleton ï¿½ continue deeper into the cave
         cout << "\nYou take a moment to catch your breath and loot the remains." << endl;
         cout << "The tunnel narrows and the air grows damper as you move deeper, torchlight flickering on the walls." << endl;
         cout << "A rustling sound grows louder ahead. You lead with your torch..." << endl;
@@ -540,7 +540,7 @@ void DungeonCrawlerGame::run() {
             // Player action
             if (combatChoice == 1) {
                 if (webbed) {
-                    cout << "You struggle at the webbing and try to strike, but the spider's webbing slows your blow — it misses!" << endl;
+                    cout << "You struggle at the webbing and try to strike, but the spider's webbing slows your blow ï¿½ it misses!" << endl;
                     // escaping attempt reduces webbed flag with some chance
                     if (webChance(rng) <= 50) {
                         webbed = false;
@@ -602,8 +602,8 @@ void DungeonCrawlerGame::run() {
         }
 
         if (health > 0 && spiderHealth <= 0) {
-            cout << "\nAs the spider dies, you notice a tattered scrap of parchment stuck to its webbed legs." << endl;
-            cout << "You pry the parchment free and read hastily scrawled words about the 'Eye Jewel of Orin' and a stone engraved with a spiral like an eye." << endl;
+            cout << "\nAs the spider dies, you notice a tattered scrap of parchment stuck on the spiders web." << endl;
+            cout << "You pry the parchment free and you hold your torch close to read the words 'Eye Jewel of Orin' and you find a stone on the ground engraved with a spiral like an eye." << endl;
             cout << "You find a small spiral-shaped stone caught in the web and a filthy gem that glints like an eye." << endl;
             hasSpiralStone = true;
             hasEyeJewel = true;
@@ -634,7 +634,7 @@ void DungeonCrawlerGame::run() {
                 return;
             } else {
                 cout << "\nYou brave the rain and make for town under cover of darkness." << endl;
-                cout << "As you approach the outskirts, shadowy figures leap from behind rocks — goblins!" << endl;
+                cout << "As you approach the outskirts, shadowy figures leap from behind rocks ï¿½ goblins!" << endl;
 
                 // Simple goblin ambush encounter
                 int goblinHealth = 20 + (level * 5);
