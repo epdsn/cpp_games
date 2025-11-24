@@ -24,6 +24,11 @@ private:
     // quest items / chapter items
     bool hasEyeJewel;
     bool hasSpiralStone;
+    bool hasParchmentPiece1;
+    bool hasParchmentPiece2;
+    bool acceptedGoblinQuest;
+    bool completedGoblinQuest;
+    bool engagedHoodedFigure;
     
     void displayWelcome();
     void chooseClass();

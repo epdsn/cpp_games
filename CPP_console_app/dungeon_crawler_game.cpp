@@ -13,7 +13,12 @@ DungeonCrawlerGame::DungeonCrawlerGame(const string& name) :
     healthPotions(0),
     manaPotions(0),
     hasEyeJewel(false),
-    hasSpiralStone(false) {}
+    hasSpiralStone(false),
+    hasParchmentPiece1(false),
+    hasParchmentPiece2(false),
+    acceptedGoblinQuest(false),
+    completedGoblinQuest(false),
+    engagedHoodedFigure(false) {}
 
 void DungeonCrawlerGame::displayWelcome() {
     cout << "\n### WELCOME TO DUNGEON CRAWLER, " << playerName << "! ###" << endl;
@@ -695,10 +700,301 @@ void DungeonCrawlerGame::run() {
                 }
 
                 cout << "\nYou limp into town, bruised and soaked, with the Eye Jewel and Spiral Stone safely in your pouch." << endl;
-                cout << "You will seek out Bladimir Okenstall at the market in the morning." << endl;
-                cout << "Chapter 1 complete. Press Enter to return to main menu...";
-                cin.get();
-                return;
+                
+                // --- TOWN CENTER PHASE ---
+                cout << "\n### CHAPTER 2: TOWN CENTER ###" << endl;
+                cout << "==============================" << endl;
+                cout << "You arrive at the town center as the sun begins to set." << endl;
+                cout << "The marketplace is winding down, merchants packing their wares." << endl;
+                cout << "A few townsfolk mill about, chatting quietly." << endl;
+                cout << "\nAs you look around, your eyes catch a MYSTERIOUS HOODED FIGURE" << endl;
+                cout << "standing in the shadows near the fountain, watching you intently." << endl;
+                cout << "The figure's gaze makes you uneasy..." << endl;
+                
+                cout << "\nWhat do you do?" << endl;
+                cout << "1. Approach the hooded figure" << endl;
+                cout << "2. Ignore the figure and head to the inn to rest" << endl;
+                cout << "3. Ask nearby townsfolk about the hooded figure" << endl;
+                cout << "Enter your choice (1-3): ";
+                
+                string townLine;
+                int townChoice = 0;
+                while (true) {
+                    if (!getline(cin, townLine)) return;
+                    if (townLine.empty()) { cout << "Enter 1-3: "; continue; }
+                    try { townChoice = stoi(townLine); } catch (...) { cout << "Invalid. Enter 1-3: "; continue; }
+                    if (townChoice >= 1 && townChoice <= 3) break;
+                }
+                
+                if (townChoice == 1) {
+                    // Approach hooded figure - triggers quest
+                    engagedHoodedFigure = true;
+                    cout << "\nYou cautiously approach the hooded figure." << endl;
+                    cout << "As you get closer, a raspy voice emanates from beneath the hood:" << endl;
+                    cout << "\"Greetings, adventurer. I've heard tales of your... expedition into the cave.\"" << endl;
+                    cout << "\"I have a proposition for you. There's trouble at Old Maggie's farm.\"" << endl;
+                    cout << "\"Goblins have been raiding her livestock. Clear them out, and I'll make it worth your while.\"" << endl;
+                    cout << "\nThe figure extends a gloved hand. \"50 gold upon completion. What say you?\"" << endl;
+                    
+                    cout << "\nDo you accept the quest?" << endl;
+                    cout << "1. Accept the goblin quest" << endl;
+                    cout << "2. Decline and walk away" << endl;
+                    cout << "Enter your choice (1-2): ";
+                    
+                    string questLine;
+                    int questChoice = 0;
+                    while (true) {
+                        if (!getline(cin, questLine)) return;
+                        if (questLine.empty()) { cout << "Enter 1 or 2: "; continue; }
+                        try { questChoice = stoi(questLine); } catch (...) { cout << "Invalid. Enter 1 or 2: "; continue; }
+                        if (questChoice == 1 || questChoice == 2) break;
+                    }
+                    
+                    if (questChoice == 1) {
+                        // Accept quest
+                        acceptedGoblinQuest = true;
+                        cout << "\n\"Excellent,\" the figure hisses. \"The farm is just outside the east gate.\"" << endl;
+                        cout << "\"Return to me when it's done.\"" << endl;
+                        
+                        // Travel to farm
+                        cout << "\nPress Enter to travel to the farm...";
+                        cin.get();
+                        
+                        cout << "\n### OLD MAGGIE'S FARM ###" << endl;
+                        cout << "========================" << endl;
+                        cout << "You arrive at the farm as darkness falls." << endl;
+                        cout << "You can hear squealing pigs and the harsh laughter of goblins." << endl;
+                        cout << "Three goblins are tormenting the livestock in the barn!" << endl;
+                        
+                        // Goblin combat at farm
+                        uniform_int_distribution<int> gobAtkFarm(3, 8);
+                        int goblinsRemaining = 3;
+                        int totalGoblinLoot = 0;
+                        
+                        for (int i = 1; i <= 3; i++) {
+                            if (health <= 0) break;
+                            
+                            cout << "\n### GOBLIN " << i << " OF 3 ###" << endl;
+                            int gobHealth = 25 + (level * 5);
+                            cout << "Goblin Health: " << gobHealth << endl;
+                            
+                            int farmTurn = 1;
+                            while (gobHealth > 0 && health > 0) {
+                                cout << "\n--- Turn " << farmTurn << " ---" << endl;
+                                cout << "Your Health: " << health << "/" << maxHealth << "  |  Potions: " << healthPotions << endl;
+                                cout << "Goblin Health: " << gobHealth << endl;
+                                cout << "\n1. Attack" << endl;
+                                cout << "2. Use health potion" << endl;
+                                cout << "Enter choice (1-2): ";
+                                
+                                string farmLine;
+                                int farmCombat = 0;
+                                while (true) {
+                                    if (!getline(cin, farmLine)) return;
+                                    if (farmLine.empty()) { cout << "Enter 1 or 2: "; continue; }
+                                    try { farmCombat = stoi(farmLine); } catch (...) { cout << "Invalid. Enter 1 or 2: "; continue; }
+                                    if (farmCombat == 1 || farmCombat == 2) break;
+                                }
+                                
+                                if (farmCombat == 1) {
+                                    int dmg = strength + smallRand(rng);
+                                    gobHealth -= dmg;
+                                    cout << "You strike for " << dmg << " damage!" << endl;
+                                    if (gobHealth <= 0) {
+                                        cout << "The goblin collapses!" << endl;
+                                        int loot = 8 + smallRand(rng);
+                                        totalGoblinLoot += loot;
+                                        cout << "You loot " << loot << " gold from the goblin." << endl;
+                                        goblinsRemaining--;
+                                        break;
+                                    }
+                                } else {
+                                    if (healthPotions > 0) {
+                                        healthPotions--;
+                                        int prev = health;
+                                        health = min(maxHealth, health + 50);
+                                        cout << "You use a health potion and recover " << (health - prev) << " health." << endl;
+                                    } else {
+                                        cout << "No health potions available!" << endl;
+                                    }
+                                }
+                                
+                                // Goblin attacks
+                                if (gobHealth > 0) {
+                                    int dmg = gobAtkFarm(rng);
+                                    health -= dmg;
+                                    cout << "Goblin attacks for " << dmg << " damage! (Health: " << max(0, health) << "/" << maxHealth << ")" << endl;
+                                    if (health <= 0) {
+                                        cout << "\nYou have been defeated. GAME OVER." << endl;
+                                        cout << "Press Enter to return to main menu...";
+                                        cin.get();
+                                        return;
+                                    }
+                                }
+                                farmTurn++;
+                            }
+                        }
+                        
+                        if (goblinsRemaining == 0) {
+                            completedGoblinQuest = true;
+                            gold += totalGoblinLoot;
+                            cout << "\n### QUEST COMPLETE! ###" << endl;
+                            cout << "You've cleared all the goblins from the farm!" << endl;
+                            cout << "Total loot collected: " << totalGoblinLoot << " gold" << endl;
+                            
+                            // Find mysterious items
+                            cout << "\nAs you search the goblins' belongings, you find something unusual..." << endl;
+                            cout << "A TORN PARCHMENT and a GLOWING STONE - similar to what you found in the cave!" << endl;
+                            cout << "Why would goblins have these items?" << endl;
+                            hasParchmentPiece1 = true;
+                            
+                            cout << "\nPress Enter to return to town...";
+                            cin.get();
+                            
+                            // Return to hooded figure
+                            cout << "\n### BACK AT TOWN CENTER ###" << endl;
+                            cout << "==========================" << endl;
+                            cout << "You return to the town center to find the hooded figure waiting." << endl;
+                            cout << "\"Ah, you've returned. Well done,\" the figure says, stepping closer." << endl;
+                            cout << "\"Now... about your payment. I believe you found something interesting?\"" << endl;
+                            cout << "\nThe figure's voice turns cold:" << endl;
+                            cout << "\"The parchment and stone you found - both in the cave AND on those goblins.\"" << endl;
+                            cout << "\"I've been following you since you left the Cave of Evil.\"" << endl;
+                            cout << "\"Those items belong to me. Hand them over... or suffer the consequences.\"" << endl;
+                            
+                            cout << "\nThe hooded figure draws a curved dagger!" << endl;
+                            cout << "\n### BOSS FIGHT: HOODED SABOTEUR ###" << endl;
+                            cout << "===================================" << endl;
+                            
+                            int bossHealth = 60 + (level * 15);
+                            uniform_int_distribution<int> bossAtk(5, 12);
+                            int bossTurn = 1;
+                            
+                            while (bossHealth > 0 && health > 0) {
+                                cout << "\n--- Turn " << bossTurn << " ---" << endl;
+                                cout << "Your Health: " << health << "/" << maxHealth << "  |  Magic: " << magic << "  |  Potions: " << healthPotions << endl;
+                                cout << "Hooded Figure Health: " << bossHealth << endl;
+                                
+                                cout << "\n1. Physical attack (Strength-based)" << endl;
+                                cout << "2. Magic attack (Magic-based, costs 2 magic)" << endl;
+                                cout << "3. Use health potion" << endl;
+                                cout << "Enter choice (1-3): ";
+                                
+                                string bossLine;
+                                int bossCombat = 0;
+                                while (true) {
+                                    if (!getline(cin, bossLine)) return;
+                                    if (bossLine.empty()) { cout << "Enter 1-3: "; continue; }
+                                    try { bossCombat = stoi(bossLine); } catch (...) { cout << "Invalid. Enter 1-3: "; continue; }
+                                    if (bossCombat >= 1 && bossCombat <= 3) break;
+                                }
+                                
+                                if (bossCombat == 1) {
+                                    int dmg = strength + smallRand(rng) + 2;
+                                    bossHealth -= dmg;
+                                    cout << "You strike with your " << weapon << " for " << dmg << " damage!" << endl;
+                                } else if (bossCombat == 2) {
+                                    if (magic >= 2) {
+                                        magic -= 2;
+                                        int dmg = magic + smallRand(rng) + 5;
+                                        bossHealth -= dmg;
+                                        cout << "You unleash a magical blast for " << dmg << " damage!" << endl;
+                                    } else {
+                                        cout << "Not enough magic! Attack fails." << endl;
+                                    }
+                                } else {
+                                    if (healthPotions > 0) {
+                                        healthPotions--;
+                                        int prev = health;
+                                        health = min(maxHealth, health + 50);
+                                        cout << "You use a health potion and recover " << (health - prev) << " health." << endl;
+                                    } else {
+                                        cout << "No health potions available!" << endl;
+                                    }
+                                }
+                                
+                                if (bossHealth <= 0) {
+                                    cout << "\n### VICTORY! ###" << endl;
+                                    cout << "The hooded figure stumbles and falls to their knees." << endl;
+                                    cout << "The hood falls back, revealing a scarred face twisted with rage." << endl;
+                                    cout << "\"You... you don't understand what you've done...\" they gasp." << endl;
+                                    cout << "\"Those artifacts... the ritual... it's already begun...\"" << endl;
+                                    cout << "\nThe figure collapses. You search their body and find:" << endl;
+                                    cout << "- 50 gold (the promised payment)" << endl;
+                                    cout << "- ANOTHER PARCHMENT PIECE!" << endl;
+                                    gold += 50;
+                                    hasParchmentPiece2 = true;
+                                    cout << "\nYou now have TWO pieces of the mysterious parchment." << endl;
+                                    cout << "When placed together, they form part of a map with strange symbols." << endl;
+                                    cout << "What ritual were they talking about?" << endl;
+                                    break;
+                                }
+                                
+                                // Boss attacks
+                                if (bossHealth > 0) {
+                                    int dmg = bossAtk(rng);
+                                    // Boss special ability every 3 turns
+                                    if (bossTurn % 3 == 0) {
+                                        dmg += 5;
+                                        cout << "The figure uses a poison strike!" << endl;
+                                    }
+                                    health -= dmg;
+                                    cout << "The hooded figure strikes for " << dmg << " damage! (Health: " << max(0, health) << "/" << maxHealth << ")" << endl;
+                                    if (health <= 0) {
+                                        cout << "\nYou have been defeated by the hooded saboteur. GAME OVER." << endl;
+                                        cout << "Press Enter to return to main menu...";
+                                        cin.get();
+                                        return;
+                                    }
+                                }
+                                bossTurn++;
+                            }
+                            
+                            level++;
+                            cout << "\n### CHAPTER 2 COMPLETE! ###" << endl;
+                            cout << "You've uncovered a conspiracy and survived an ambush!" << endl;
+                            cout << "Current Stats - Health: " << health << "/" << maxHealth << ", Strength: " << strength << ", Magic: " << magic << ", Gold: " << gold << endl;
+                            cout << "Level: " << level << endl;
+                            cout << "\nThe mystery deepens... What do these parchment pieces reveal?" << endl;
+                            cout << "Press Enter to return to main menu...";
+                            cin.get();
+                            return;
+                        }
+                        
+                    } else {
+                        // Decline quest
+                        cout << "\n\"Pity,\" the figure mutters. \"I thought you had more courage.\"" << endl;
+                        cout << "The figure melts back into the shadows and disappears." << endl;
+                        cout << "\nYou head to the inn to rest, wondering who that was." << endl;
+                        cout << "Press Enter to continue...";
+                        cin.get();
+                        cout << "\n(This storyline path ends here for now.)" << endl;
+                        cout << "Press Enter to return to main menu...";
+                        cin.get();
+                        return;
+                    }
+                    
+                } else if (townChoice == 2) {
+                    // Ignore and go to inn
+                    cout << "\nYou decide to avoid the mysterious figure and head straight to the inn." << endl;
+                    cout << "As you walk away, you feel eyes watching your back..." << endl;
+                    cout << "You rest for the night, but sleep uneasily." << endl;
+                    cout << "\nThe hooded figure is gone in the morning. You've avoided the confrontation... for now." << endl;
+                    cout << "Press Enter to return to main menu...";
+                    cin.get();
+                    return;
+                    
+                } else {
+                    // Ask townsfolk
+                    cout << "\nYou approach an elderly merchant packing his cart." << endl;
+                    cout << "\"That hooded one? Been lurking around for days,\" he says nervously." << endl;
+                    cout << "\"Nobody knows who they are. I'd stay clear if I were you.\"" << endl;
+                    cout << "\nWhen you turn back to look, the hooded figure has vanished into the night." << endl;
+                    cout << "You've avoided the encounter, but you can't shake the feeling you're being watched." << endl;
+                    cout << "Press Enter to return to main menu...";
+                    cin.get();
+                    return;
+                }
             }
         }
     }
