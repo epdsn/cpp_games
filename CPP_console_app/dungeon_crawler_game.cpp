@@ -30,7 +30,7 @@ void DungeonCrawlerGame::displayWelcome() {
 }
 
 void DungeonCrawlerGame::chooseClass() {
-    cout << "### Choose Your Character Class ###" << endl;
+    cout << "\n### Choose Your Character Class ###" << endl;
     cout << "==================================" << endl;
     cout << "1. ### Warrior   - High strength, low magic" << endl;
     cout << "2. ### Mage      - High magic, low strength" << endl;
