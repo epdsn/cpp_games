@@ -1008,8 +1008,94 @@ void DungeonCrawlerGame::run() {
     cout << "Press Enter to continue to the next phase...";
     cin.get();
 
-    // Next phase placeholder (actual exploration/encounters to be implemented)
-    cout << "\n(Next phase not implemented yet - dungeon exploration coming soon.)" << endl;
-    cout << "Press Enter to return to main menu...";
+    // Next phase menu after advancing to Level 2
+    cout << "\n### NEXT PHASE: WHAT WILL YOU DO? ###" << endl;
+    cout << "=====================================" << endl;
+    cout << "1. Seek out Bladimir Okenstall, the artifact expert" << endl;
+    cout << "2. Visit the town shop" << endl;
+    cout << "3. Go home and rest" << endl;
+    cout << "Enter your choice (1-3): ";
+
+    string nextLine;
+    int nextChoice = 0;
+    while (true) {
+        if (!getline(cin, nextLine)) return;
+        if (nextLine.empty()) { cout << "Enter 1-3: "; continue; }
+        try { nextChoice = stoi(nextLine); } catch (...) { cout << "Invalid. Enter 1-3: "; continue; }
+        if (nextChoice >= 1 && nextChoice <= 3) break;
+        cout << "Invalid. Enter 1-3: ";
+    }
+
+    if (nextChoice == 1) {
+        // Bladimir Okenstall - artifact expert dialog and stat bonus
+        cout << "\n### BLADIMIR OKENSTALL'S SHOP ###" << endl;
+        cout << "=================================" << endl;
+        cout << "You make your way to the edge of town where a small, cluttered shop" << endl;
+        cout << "sits beneath a crooked sign: \"Okenstall Antiquities & Curiosities.\"" << endl;
+        cout << "\nA bell chimes as you enter. An elderly man with wild gray hair" << endl;
+        cout << "and spectacles perched on his nose looks up from a dusty tome." << endl;
+        cout << "\n\"Ah! A visitor! Welcome, welcome!\" he exclaims." << endl;
+        cout << "\"I am Bladimir Okenstall. And you... you carry something interesting.\"" << endl;
+        cout << "\nHis eyes gleam as he notices your pouch." << endl;
+
+        // Examine artifacts
+        cout << "\nBladimir examines your artifacts with great interest..." << endl;
+        if (hasEyeJewel || hasSpiralStone) {
+            cout << "\n\"Fascinating!\" he breathes. \"Do you know what you have here?\"" << endl;
+            if (hasEyeJewel) {
+                cout << "\"This Eye Jewel... it's said to be part of the Eye of Orin,\"" << endl;
+                cout << "\"an ancient artifact that reveals hidden truths.\"" << endl;
+            }
+            if (hasSpiralStone) {
+                cout << "\"And this Spiral Stone! It's a key, of sorts.\"" << endl;
+                cout << "\"Legends speak of a sealed chamber deep in the mountains.\"" << endl;
+            }
+        }
+
+        // Explain ritual/map
+        cout << "\nBladimir spreads an old map across his cluttered table." << endl;
+        cout << "\"These artifacts are connected to an ancient ritual,\" he explains." << endl;
+        cout << "\"Long ago, powerful mages sealed away a great evil.\"" << endl;
+        cout << "\"The ritual required specific items - items like these.\"" << endl;
+        cout << "\n\"This map shows the locations where the ritual was performed.\"" << endl;
+        cout << "\"If someone were to gather all the pieces...\"" << endl;
+        cout << "He trails off, a worried look crossing his face." << endl;
+        cout << "\n\"Take this knowledge with you, adventurer. Be careful out there.\"" << endl;
+
+        // Grant stat bonuses
+        cout << "\nBladimir rummages through his belongings and produces a small vial." << endl;
+        cout << "\"Here - a gift for bringing me such fascinating specimens to study.\"" << endl;
+        cout << "\"This elixir will strengthen your body and mind.\"" << endl;
+        cout << "\nYou drink the elixir and feel a surge of power!" << endl;
+        strength += 1;
+        magic += 1;
+        maxHealth += 1;
+        health += 1;
+        cout << "### +1 Strength! +1 Magic! +1 Max Health! +1 Health! ###" << endl;
+        cout << "Updated Stats - Strength: " << strength << ", Magic: " << magic << ", Health: " << health << "/" << maxHealth << endl;
+
+    } else if (nextChoice == 2) {
+        // Visit the town shop
+        cout << "\nYou decide to visit the town shop to stock up on supplies." << endl;
+        visitShop();
+
+    } else {
+        // Go home and rest
+        cout << "\n### HOME SWEET HOME ###" << endl;
+        cout << "======================" << endl;
+        cout << "Weary from your adventures, you return to your modest dwelling." << endl;
+        cout << "The familiar creak of the door is a welcome sound." << endl;
+        cout << "\nYou light a fire in the hearth and prepare a simple meal." << endl;
+        cout << "As the flames crackle, you reflect on your journey so far." << endl;
+        cout << "\nThe cave, the battles, the mysterious artifacts..." << endl;
+        cout << "There's still so much you don't understand." << endl;
+        cout << "\nBut for now, rest is what you need most." << endl;
+        cout << "You settle into your bed and drift into a deep, dreamless sleep." << endl;
+        cout << "\n*** Your health has been fully restored! ***" << endl;
+        health = maxHealth;
+        cout << "Health: " << health << "/" << maxHealth << endl;
+    }
+
+    cout << "\nPress Enter to return to main menu...";
     cin.get();
 }
