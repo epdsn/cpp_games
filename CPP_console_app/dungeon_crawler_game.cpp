@@ -1035,12 +1035,12 @@ void DungeonCrawlerGame::run() {
         cout << "\nA bell chimes as you enter. An elderly man with wild gray hair" << endl;
         cout << "and spectacles perched on his nose looks up from a dusty tome." << endl;
         cout << "\n\"Ah! A visitor! Welcome, welcome!\" he exclaims." << endl;
-        cout << "\"I am Bladimir Okenstall. And you... you carry something interesting.\"" << endl;
-        cout << "\nHis eyes gleam as he notices your pouch." << endl;
+        cout << "\"I am Bladimir Okenstall. And you... you have the look of an adventurer.\"" << endl;
 
-        // Examine artifacts
-        cout << "\nBladimir examines your artifacts with great interest..." << endl;
+        // Examine artifacts - conditional on having any
         if (hasEyeJewel || hasSpiralStone) {
+            cout << "\nHis eyes gleam as he notices your pouch." << endl;
+            cout << "\"May I?\" Bladimir examines your artifacts with great interest..." << endl;
             cout << "\n\"Fascinating!\" he breathes. \"Do you know what you have here?\"" << endl;
             if (hasEyeJewel) {
                 cout << "\"This Eye Jewel... it's said to be part of the Eye of Orin,\"" << endl;
@@ -1050,29 +1050,43 @@ void DungeonCrawlerGame::run() {
                 cout << "\"And this Spiral Stone! It's a key, of sorts.\"" << endl;
                 cout << "\"Legends speak of a sealed chamber deep in the mountains.\"" << endl;
             }
+            // Explain ritual/map - only when artifacts present
+            cout << "\nBladimir spreads an old map across his cluttered table." << endl;
+            cout << "\"These artifacts are connected to an ancient ritual,\" he explains." << endl;
+            cout << "\"Long ago, powerful mages sealed away a great evil.\"" << endl;
+            cout << "\"The ritual required specific items - items like these.\"" << endl;
+            cout << "\n\"This map shows the locations where the ritual was performed.\"" << endl;
+            cout << "\"If someone were to gather all the pieces...\"" << endl;
+            cout << "He trails off, a worried look crossing his face." << endl;
+            cout << "\n\"Take this knowledge with you, adventurer. Be careful out there.\"" << endl;
+
+            // Grant stat bonuses - reward for bringing artifacts
+            cout << "\nBladimir rummages through his belongings and produces a small vial." << endl;
+            cout << "\"Here - a gift for bringing me such fascinating specimens to study.\"" << endl;
+            cout << "\"This elixir will strengthen your body and mind.\"" << endl;
+            cout << "\nYou drink the elixir and feel a surge of power!" << endl;
+            strength += 1;
+            magic += 1;
+            maxHealth += 1;
+            health += 1;
+            cout << "### +1 Strength! +1 Magic! +1 Max Health! +1 Health! ###" << endl;
+            cout << "Updated Stats - Strength: " << strength << ", Magic: " << magic << ", Health: " << health << "/" << maxHealth << endl;
+        } else {
+            // No artifacts - still a helpful encounter but different dialog
+            cout << "\nYou explain that you're seeking information about ancient artifacts." << endl;
+            cout << "Bladimir nods thoughtfully. \"Ah, a seeker of knowledge!\"" << endl;
+            cout << "\nHe gestures around his shop, filled with dusty relics." << endl;
+            cout << "\"Many adventurers come through here with curiosities from the caves.\"" << endl;
+            cout << "\"The Eye of Orin, the Spiral Stones... legends, mostly.\"" << endl;
+            cout << "\n\"But if you find anything unusual, bring it to me.\"" << endl;
+            cout << "\"I'll make it worth your while.\"" << endl;
+
+            // Smaller bonus for visiting without artifacts
+            cout << "\nBladimir offers you a cup of restorative tea." << endl;
+            cout << "You feel slightly refreshed." << endl;
+            health = min(maxHealth, health + 10);
+            cout << "Health restored by 10. (Health: " << health << "/" << maxHealth << ")" << endl;
         }
-
-        // Explain ritual/map
-        cout << "\nBladimir spreads an old map across his cluttered table." << endl;
-        cout << "\"These artifacts are connected to an ancient ritual,\" he explains." << endl;
-        cout << "\"Long ago, powerful mages sealed away a great evil.\"" << endl;
-        cout << "\"The ritual required specific items - items like these.\"" << endl;
-        cout << "\n\"This map shows the locations where the ritual was performed.\"" << endl;
-        cout << "\"If someone were to gather all the pieces...\"" << endl;
-        cout << "He trails off, a worried look crossing his face." << endl;
-        cout << "\n\"Take this knowledge with you, adventurer. Be careful out there.\"" << endl;
-
-        // Grant stat bonuses
-        cout << "\nBladimir rummages through his belongings and produces a small vial." << endl;
-        cout << "\"Here - a gift for bringing me such fascinating specimens to study.\"" << endl;
-        cout << "\"This elixir will strengthen your body and mind.\"" << endl;
-        cout << "\nYou drink the elixir and feel a surge of power!" << endl;
-        strength += 1;
-        magic += 1;
-        maxHealth += 1;
-        health += 1;
-        cout << "### +1 Strength! +1 Magic! +1 Max Health! +1 Health! ###" << endl;
-        cout << "Updated Stats - Strength: " << strength << ", Magic: " << magic << ", Health: " << health << "/" << maxHealth << endl;
 
     } else if (nextChoice == 2) {
         // Visit the town shop
