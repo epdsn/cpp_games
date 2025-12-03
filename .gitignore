@@ -108,3 +108,6 @@ Thumbs.db
 
 # Test binaries (Linux)
 game_center_test
+
+# CodeQL artifacts
+_codeql_detected_source_root
