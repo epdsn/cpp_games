@@ -446,7 +446,7 @@ void DungeonCrawlerGame::run() {
         // Player action
         if (combatChoice == 1) {
             if (enemyBackingAway) {
-                cout << "You lunge forward but the skeleton has backed away � your attack misses!" << endl;
+                cout << "You lunge forward but the skeleton has backed away - your attack misses!" << endl;
             } else {
                 int playerDamage = strength + smallRand(rng);
                 enemyHealth -= playerDamage;
@@ -538,8 +538,11 @@ void DungeonCrawlerGame::run() {
                     cout << "Please enter 1-3: ";
                     continue;
                 }
-                try { combatChoice = stoi(combatLine); } catch (...) { cout << "Invalid input. Enter 1-3: "; continue; }
-                if (combatChoice >= 1 && combatChoice <= 3) break;
+                try {
+                    combatChoice = stoi(combatLine);
+                    if (combatChoice >= 1 && combatChoice <= 3) break;
+                } catch (...) {}
+                cout << "Invalid input. Enter 1-3: ";
             }
 
             // Player action
@@ -804,7 +807,7 @@ void DungeonCrawlerGame::run() {
                                         cout << "The goblin collapses!" << endl;
                                         int loot = 8 + smallRand(rng);
                                         totalGoblinLoot += loot;
-                                        cout << "You loot " << loot << " gold from the goblin." << endl;
+                    cout << "You loot " << loot << " gold from the goblin." << endl;
                                         goblinsRemaining--;
                                         break;
                                     }
@@ -857,6 +860,7 @@ void DungeonCrawlerGame::run() {
                             cout << "You return to the town center to find the hooded figure waiting." << endl;
                             cout << "\"Ah, you've returned. Well done,\" the figure says, stepping closer." << endl;
                             cout << "\"Now... about your payment. I believe you found something interesting?\"" << endl;
+                            
                             cout << "\nThe figure's voice turns cold:" << endl;
                             cout << "\"The parchment and stone you found - both in the cave AND on those goblins.\"" << endl;
                             cout << "\"I've been following you since you left the Cave of Evil.\"" << endl;
@@ -1071,45 +1075,130 @@ void DungeonCrawlerGame::run() {
             health += 1;
             cout << "### +1 Strength! +1 Magic! +1 Max Health! +1 Health! ###" << endl;
             cout << "Updated Stats - Strength: " << strength << ", Magic: " << magic << ", Health: " << health << "/" << maxHealth << endl;
-        } else {
-            // No artifacts - still a helpful encounter but different dialog
-            cout << "\nYou explain that you're seeking information about ancient artifacts." << endl;
-            cout << "Bladimir nods thoughtfully. \"Ah, a seeker of knowledge!\"" << endl;
-            cout << "\nHe gestures around his shop, filled with dusty relics." << endl;
-            cout << "\"Many adventurers come through here with curiosities from the caves.\"" << endl;
-            cout << "\"The Eye of Orin, the Spiral Stones... legends, mostly.\"" << endl;
-            cout << "\n\"But if you find anything unusual, bring it to me.\"" << endl;
-            cout << "\"I'll make it worth your while.\"" << endl;
 
-            // Smaller bonus for visiting without artifacts
-            cout << "\nBladimir offers you a cup of restorative tea." << endl;
-            cout << "You feel slightly refreshed." << endl;
-            health = min(maxHealth, health + 10);
-            cout << "Health restored by 10. (Health: " << health << "/" << maxHealth << ")" << endl;
+            // New: option to ask Bladimir more or leave
+            cout << "\nDo you:";
+            cout << "\n1. Leave and continue your journey." << endl;
+            cout << "2. Ask Bladimir for more information about where to go next." << endl;
+            cout << "Enter your choice (1-2): ";
+
+            string bladLine;
+            int bladChoice = 0;
+            while (true) {
+                if (!getline(cin, bladLine)) return; // EOF safety
+                if (bladLine.empty()) { cout << "Enter 1 or 2: "; continue; }
+                try { bladChoice = stoi(bladLine); } catch (...) { cout << "Invalid. Enter 1 or 2: "; continue; }
+                if (bladChoice == 1 || bladChoice == 2) break;
+            }
+
+            if (bladChoice == 2) {
+                cout << "\n\"Head east,\" Bladimir says, peering at the map. \"There's an old abandoned castle in the woods.\"" << endl;
+                cout << "\"Look for a basement entrance near the crumbling eastern barbican. That's where you should begin.\"" << endl;
+                cout << "\nHe pushes a rough sketch of the area toward you - the path to the castle is marked." << endl;
+
+                // Town entrance: choose direction
+                cout << "\nYou leave Bladimir's shop and stand at the town's edge. Which way do you go?" << endl;
+                cout << "1. East - Follow the road to the abandoned castle (main quest)." << endl;
+                cout << "2. North - Follow the northern lane (risks: thieves)." << endl;
+                cout << "3. West - Take the western track into the hills (risks: goblins)." << endl;
+                cout << "Enter your choice (1-3): ";
+
+                string dirLine;
+                int dirChoice = 0;
+                while (true) {
+                    if (!getline(cin, dirLine)) return;
+                    if (dirLine.empty()) { cout << "Enter 1-3: "; continue; }
+                    try { dirChoice = stoi(dirLine); } catch (...) { cout << "Invalid. Enter 1-3: "; continue; }
+                    if (dirChoice >= 1 && dirChoice <= 3) break;
+                }
+
+                if (dirChoice == 1) {
+                    cout << "\nYou set out east, following Bladimir's sketch toward the abandoned castle." << endl;
+                    cout << "This begins the next part of your adventure — the castle and its basement await." << endl;
+                    cout << "Chapter continues in the next module. Press Enter to return to main menu...";
+                    cin.get();
+                    return;
+                }
+
+                if (dirChoice == 2) {
+                    // North - thieves encounter
+                    cout << "\nYou head north along the lane. Shadows cling to the alleyways..." << endl;
+                    int thieves = 2;
+                    int totalLoot = 0;
+                    uniform_int_distribution<int> thiefAtk(4, 9);
+                    for (int t = 1; t <= thieves && health > 0; ++t) {
+                        int thiefHealth = 30;
+                        cout << "\nA thief emerges! (Thief " << t << ")" << endl;
+                        while (thiefHealth > 0 && health > 0) {
+                            cout << "\nYour Health: " << health << "/" << maxHealth << "  |  Thief Health: " << thiefHealth << endl;
+                            cout << "1. Attack  2. Use Health Potion" << endl;
+                            string thLine; int thChoice = 0;
+                            while (true) { if (!getline(cin, thLine)) return; if (thLine.empty()) { cout << "Choose 1 or 2: "; continue; } try { thChoice = stoi(thLine); } catch (...) { cout << "Invalid. Choose 1 or 2: "; continue; } if (thChoice==1||thChoice==2) break; }
+                            if (thChoice == 1) {
+                                int dmg = strength + smallRand(rng);
+                                thiefHealth -= dmg;
+                                cout << "You strike the thief for " << dmg << " damage!" << endl;
+                                if (thiefHealth <= 0) { int loot = 10 + smallRand(rng); totalLoot += loot; cout << "Thief defeated! You take " << loot << " gold." << endl; break; }
+                            } else {
+                                if (healthPotions>0) { healthPotions--; int prev=health; health = min(maxHealth, health+50); cout << "You heal " << (health-prev) << " health." << endl; } else cout << "No health potions!" << endl;
+                            }
+                            // thief attacks
+                            if (thiefHealth>0) { int dmg = thiefAtk(rng); health -= dmg; cout << "Thief stabs you for " << dmg << " damage! (Health: " << max(0,health) << "/" << maxHealth << ")" << endl; if (health<=0) { cout << "\nYou were killed by the thieves. GAME OVER." << endl; cout << "Press Enter to return to main menu..."; cin.get(); return; } }
+                        }
+                    }
+                    if (health>0) { gold += totalLoot; cout << "\nYou defeated the thieves and escaped with " << totalLoot << " gold." << endl; cout << "Press Enter to return to main menu..."; cin.get(); return; }
+                }
+
+                if (dirChoice == 3) {
+                    // West - goblin encounter, success yields strength increase
+                    cout << "\nYou head west into the hills. The wind carries distant cackles..." << endl;
+                    int gobCount = 2;
+                    uniform_int_distribution<int> gobAtk(3,7);
+                    int gobLoot = 0;
+                    for (int g=1; g<=gobCount && health>0; ++g) {
+                        int gh = 25;
+                        cout << "\nGoblin " << g << " leaps out!" << endl;
+                        while (gh>0 && health>0) {
+                            cout << "\nYour Health: " << health << "/" << maxHealth << "  |  Goblin Health: " << gh << endl;
+                            cout << "1. Attack  2. Use Health Potion" << endl;
+                            string gw; int gwc=0; while (true) { if (!getline(cin, gw)) return; if (gw.empty()) { cout << "Choose 1 or 2: "; continue; } try { gwc = stoi(gw); } catch(...) { cout << "Invalid. Choose 1 or 2: "; continue; } if (gwc==1||gwc==2) break; }
+                            if (gwc==1) { int dmg = strength + smallRand(rng); gh -= dmg; cout << "You hit the goblin for " << dmg << " damage!" << endl; if (gh<=0) { int loot = 6 + smallRand(rng); gobLoot += loot; cout << "Goblin slain. You loot " << loot << " gold." << endl; break; } }
+                            else { if (healthPotions>0) { healthPotions--; int prev=health; health=min(maxHealth,health+50); cout << "You heal " << (health-prev) << " health." << endl; } else cout << "No health potions!" << endl; }
+                            if (gh>0) { int dmg = gobAtk(rng); health -= dmg; cout << "Goblin hits for " << dmg << " damage! (Health: " << max(0,health) << "/" << maxHealth << ")" << endl; if (health<=0) { cout << "\nYou were killed by the goblins. GAME OVER." << endl; cout << "Press Enter to return to main menu..."; cin.get(); return; } }
+                        }
+                    }
+                    if (health>0) { gold += gobLoot; strength += 1; cout << "\nYou defeated the goblins, gaining experience and strength! +1 Strength." << endl; cout << "Press Enter to return to main menu..."; cin.get(); return; }
+                }
+
+            } else {
+                // leave Bladimir's shop
+                cout << "\nYou thank Bladimir and head back out into the town." << endl;
+                cout << "Press Enter to return to main menu...";
+                cin.get();
+                return;
+            }
+        } else if (nextChoice == 2) {
+            // Visit the town shop
+            cout << "\nYou decide to visit the town shop to stock up on supplies." << endl;
+            visitShop();
+
+        } else {
+            // Go home and rest
+            cout << "\n### HOME SWEET HOME ###" << endl;
+            cout << "======================" << endl;
+            cout << "Weary from your adventures, you return to your modest dwelling." << endl;
+            cout << "The familiar creak of the door is a welcome sound." << endl;
+            cout << "\nYou light a fire in the hearth and prepare a simple meal." << endl;
+            cout << "As the flames crackle, you reflect on your journey so far." << endl;
+            cout << "\nThe cave, the battles, the mysterious artifacts..." << endl;
+            cout << "There's still so much you don't understand." << endl;
+            cout << "\nBut for now, rest is what you need most." << endl;
+            cout << "You settle into your bed and drift into a deep, dreamless sleep." << endl;
+            cout << "\n*** Your health has been fully restored! ***" << endl;
+            health = maxHealth;
+            cout << "Health: " << health << "/" << maxHealth << endl;
         }
 
-    } else if (nextChoice == 2) {
-        // Visit the town shop
-        cout << "\nYou decide to visit the town shop to stock up on supplies." << endl;
-        visitShop();
-
-    } else {
-        // Go home and rest
-        cout << "\n### HOME SWEET HOME ###" << endl;
-        cout << "======================" << endl;
-        cout << "Weary from your adventures, you return to your modest dwelling." << endl;
-        cout << "The familiar creak of the door is a welcome sound." << endl;
-        cout << "\nYou light a fire in the hearth and prepare a simple meal." << endl;
-        cout << "As the flames crackle, you reflect on your journey so far." << endl;
-        cout << "\nThe cave, the battles, the mysterious artifacts..." << endl;
-        cout << "There's still so much you don't understand." << endl;
-        cout << "\nBut for now, rest is what you need most." << endl;
-        cout << "You settle into your bed and drift into a deep, dreamless sleep." << endl;
-        cout << "\n*** Your health has been fully restored! ***" << endl;
-        health = maxHealth;
-        cout << "Health: " << health << "/" << maxHealth << endl;
+        cout << "\nPress Enter to return to main menu...";
+        cin.get();
     }
-
-    cout << "\nPress Enter to return to main menu...";
-    cin.get();
-}
