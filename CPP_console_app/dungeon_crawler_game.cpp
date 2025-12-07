@@ -883,7 +883,7 @@ void DungeonCrawlerGame::run() {
                                 cout << "2. Magic attack (Magic-based, costs 2 magic)" << endl;
                                 cout << "3. Use health potion" << endl;
                                 cout << "Enter choice (1-3): ";
-                                
+
                                 string bossLine;
                                 int bossCombat = 0;
                                 while (true) {
@@ -1202,3 +1202,4 @@ void DungeonCrawlerGame::run() {
         cout << "\nPress Enter to return to main menu...";
         cin.get();
     }
+}
