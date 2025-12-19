@@ -733,8 +733,8 @@ void DungeonCrawlerGame::run() {
                 cout << "A few townsfolk mill about, chatting quietly." << endl;
                 cout << "\nAs you look around, your eyes catch a MYSTERIOUS HOODED FIGURE" << endl;
                 cout << "standing in the shadows near the fountain, watching you intently." << endl;
-                cout << "The figure's gaze makes you uneasy..." << endl;
-
+                cout << "The figure's gaze makes you uneasy, but you are compelled to speak to him..." << endl;
+                
                 cout << "\nWhat do you do?" << endl;
                 cout << "1. Approach the hooded figure" << endl;
                 cout << "2. Ignore the figure and head to the inn to rest" << endl;
