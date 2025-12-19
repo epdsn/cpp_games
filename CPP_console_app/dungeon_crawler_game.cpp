@@ -337,7 +337,8 @@ void DungeonCrawlerGame::run() {
         try {
             choice = stoi(line);
             if (choice >= 1 && choice <= 4) break;
-        } catch (...) {}
+        }
+        catch (...) {}
         cout << "Invalid input. Enter 1-4: ";
     }
 
@@ -345,57 +346,58 @@ void DungeonCrawlerGame::run() {
     uniform_int_distribution<int> smallRand(1, 6);
 
     switch (choice) {
-        case 1: { // Light torch
-            cout << "\nYou light a torch and step forward, the tunnel reveals uneven stones and old markings." << endl;
-            int foundGold = 5 + smallRand(rng); // 6-11 gold
-            gold += foundGold;
-            cout << "Hidden in a crack you find a small pouch containing " << foundGold << " gold!" << endl;
-            cout << "You proceed safely deeper, senses alert." << endl;
-            break;
+    case 1: { // Light torch
+        cout << "\nYou light a torch and step forward, the tunnel reveals uneven stones and old markings." << endl;
+        int foundGold = 5 + smallRand(rng); // 6-11 gold
+        gold += foundGold;
+        cout << "Hidden in a crack you find a small pouch containing " << foundGold << " gold!" << endl;
+        cout << "You proceed safely deeper, senses alert." << endl;
+        break;
+    }
+    case 2: { // Charge in
+        cout << "\nYou charge into the dark, sword raised. Something latches onto your leg!" << endl;
+        int damage = smallRand(rng) + (level / 1); // small damage
+        health -= damage;
+        cout << "You struggle free but take " << damage << " damage. (Health: " << max(0, health) << "/" << maxHealth << ")" << endl;
+        if (health <= 0) {
+            cout << "\nYou succumb to your wounds in the darkness. GAME OVER." << endl;
+            cout << "Press Enter to return to main menu...";
+            cin.get();
+            return;
         }
-        case 2: { // Charge in
-            cout << "\nYou charge into the dark, sword raised. Something latches onto your leg!" << endl;
-            int damage = smallRand(rng) + (level / 1); // small damage
+        cout << "Bruised but alive, you press on." << endl;
+        break;
+    }
+    case 3: { // Shout
+        cout << "\nYou let out a shout and the cave answers with a chorus of clicks and a distant scuttling." << endl;
+        int reaction = smallRand(rng);
+        if (reaction >= 5) {
+            cout << "The noise draws a scavenger creature, but it startle-runs and drops an old amulet." << endl;
+            cout << "You pick up the amulet (+1 Magic)." << endl;
+            magic += 1;
+        }
+        else {
+            cout << "The echo wakes a nest of bats that graze you as they pass." << endl;
+            int damage = 1 + smallRand(rng) % 2;
             health -= damage;
-            cout << "You struggle free but take " << damage << " damage. (Health: " << max(0, health) << "/" << maxHealth << ")" << endl;
+            cout << "You take " << damage << " damage. (Health: " << max(0, health) << "/" << maxHealth << ")" << endl;
             if (health <= 0) {
-                cout << "\nYou succumb to your wounds in the darkness. GAME OVER." << endl;
+                cout << "\nYou fall in the dark. GAME OVER." << endl;
                 cout << "Press Enter to return to main menu...";
                 cin.get();
                 return;
             }
-            cout << "Bruised but alive, you press on." << endl;
-            break;
         }
-        case 3: { // Shout
-            cout << "\nYou let out a shout and the cave answers with a chorus of clicks and a distant scuttling." << endl;
-            int reaction = smallRand(rng);
-            if (reaction >= 5) {
-                cout << "The noise draws a scavenger creature, but it startle-runs and drops an old amulet." << endl;
-                cout << "You pick up the amulet (+1 Magic)." << endl;
-                magic += 1;
-            } else {
-                cout << "The echo wakes a nest of bats that graze you as they pass." << endl;
-                int damage = 1 + smallRand(rng) % 2;
-                health -= damage;
-                cout << "You take " << damage << " damage. (Health: " << max(0, health) << "/" << maxHealth << ")" << endl;
-                if (health <= 0) {
-                    cout << "\nYou fall in the dark. GAME OVER." << endl;
-                    cout << "Press Enter to return to main menu...";
-                    cin.get();
-                    return;
-                }
-            }
-            break;
-        }
-        case 4: { // Retreat
-            cout << "\nYou decide discretion is the better part of valor and return to town for now." << endl;
-            cout << "Level 1 aborted. Press Enter to return to main menu...";
-            cin.get();
-            return;
-        }
-        default:
-            break;
+        break;
+    }
+    case 4: { // Retreat
+        cout << "\nYou decide discretion is the better part of valor and return to town for now." << endl;
+        cout << "Level 1 aborted. Press Enter to return to main menu...";
+        cin.get();
+        return;
+    }
+    default:
+        break;
     }
 
     // Proceed to encounter
@@ -439,7 +441,8 @@ void DungeonCrawlerGame::run() {
             try {
                 combatChoice = stoi(combatLine);
                 if (combatChoice >= 1 && combatChoice <= 3) break;
-            } catch (...) {}
+            }
+            catch (...) {}
             cout << "Invalid input. Enter 1-3: ";
         }
 
@@ -447,7 +450,8 @@ void DungeonCrawlerGame::run() {
         if (combatChoice == 1) {
             if (enemyBackingAway) {
                 cout << "You lunge forward but the skeleton has backed away - your attack misses!" << endl;
-            } else {
+            }
+            else {
                 int playerDamage = strength + smallRand(rng);
                 enemyHealth -= playerDamage;
                 cout << "\nYou strike the skeleton for " << playerDamage << " damage!" << endl;
@@ -459,23 +463,27 @@ void DungeonCrawlerGame::run() {
                     break;
                 }
             }
-        } else if (combatChoice == 2) {
+        }
+        else if (combatChoice == 2) {
             if (healthPotions > 0) {
                 healthPotions--;
                 int healAmount = 50;
                 int prev = health;
                 health = min(maxHealth, health + healAmount);
                 cout << "\nYou drink a health potion and recover " << (health - prev) << " health! (Health: " << health << "/" << maxHealth << ")" << endl;
-            } else {
+            }
+            else {
                 cout << "\nYou have no health potions left!" << endl;
             }
-        } else if (combatChoice == 3) {
+        }
+        else if (combatChoice == 3) {
             if (manaPotions > 0) {
                 manaPotions--;
                 int manaAmount = 5;
                 magic += manaAmount;
                 cout << "\nYou drink a mana potion and recover " << manaAmount << " magic! (Magic: " << magic << ")" << endl;
-            } else {
+            }
+            else {
                 cout << "\nYou have no mana potions left!" << endl;
             }
         }
@@ -491,7 +499,8 @@ void DungeonCrawlerGame::run() {
                 cin.get();
                 return;
             }
-        } else if (enemyHealth > 0 && enemyBackingAway) {
+        }
+        else if (enemyHealth > 0 && enemyBackingAway) {
             cout << "The skeleton keeps its distance, watching you warily." << endl;
         }
 
@@ -541,7 +550,8 @@ void DungeonCrawlerGame::run() {
                 try {
                     combatChoice = stoi(combatLine);
                     if (combatChoice >= 1 && combatChoice <= 3) break;
-                } catch (...) {}
+                }
+                catch (...) {}
                 cout << "Invalid input. Enter 1-3: ";
             }
 
@@ -554,7 +564,8 @@ void DungeonCrawlerGame::run() {
                         webbed = false;
                         cout << "You partially free yourself from the webbing." << endl;
                     }
-                } else {
+                }
+                else {
                     int playerDamage = strength + smallRand(rng);
                     spiderHealth -= playerDamage;
                     cout << "\nYou slash at the spider for " << playerDamage << " damage!" << endl;
@@ -566,23 +577,27 @@ void DungeonCrawlerGame::run() {
                         break;
                     }
                 }
-            } else if (combatChoice == 2) {
+            }
+            else if (combatChoice == 2) {
                 if (healthPotions > 0) {
                     healthPotions--;
                     int healAmount = 50;
                     int prev = health;
                     health = min(maxHealth, health + healAmount);
                     cout << "\nYou drink a health potion and recover " << (health - prev) << " health! (Health: " << health << "/" << maxHealth << ")" << endl;
-                } else {
+                }
+                else {
                     cout << "\nYou have no health potions left!" << endl;
                 }
-            } else if (combatChoice == 3) {
+            }
+            else if (combatChoice == 3) {
                 if (manaPotions > 0) {
                     manaPotions--;
                     int manaAmount = 5;
                     magic += manaAmount;
                     cout << "\nYou drink a mana potion and recover " << manaAmount << " magic! (Magic: " << magic << ")" << endl;
-                } else {
+                }
+                else {
                     cout << "\nYou have no mana potions left!" << endl;
                 }
             }
@@ -593,7 +608,8 @@ void DungeonCrawlerGame::run() {
                 if (!webbed && chance <= 30) {
                     webbed = true;
                     cout << "The spider flings sticky webbing and entangles you! You'll be slowed next turn." << endl;
-                } else {
+                }
+                else {
                     int spiderDamage = spiderAtkRand(rng);
                     health -= spiderDamage;
                     cout << "The spider lunges and bites, dealing " << spiderDamage << " damage! (Health: " << max(0, health) << "/" << maxHealth << ")" << endl;
@@ -630,7 +646,8 @@ void DungeonCrawlerGame::run() {
             while (true) {
                 if (!getline(cin, endLine)) return; // EOF safety
                 if (endLine.empty()) { cout << "Enter 1 or 2: "; continue; }
-                try { endChoice = stoi(endLine); } catch (...) { cout << "Invalid. Enter 1 or 2: "; continue; }
+                try { endChoice = stoi(endLine); }
+                catch (...) { cout << "Invalid. Enter 1 or 2: "; continue; }
                 if (endChoice == 1 || endChoice == 2) break;
             }
 
@@ -640,7 +657,8 @@ void DungeonCrawlerGame::run() {
                 cout << "Chapter 1 complete. Press Enter to return to main menu...";
                 cin.get();
                 return;
-            } else {
+            }
+            else {
                 cout << "\nYou brave the rain and make for town under cover of darkness." << endl;
                 cout << "As you approach the outskirts, shadowy figures leap from behind rocks � goblins!" << endl;
 
@@ -660,7 +678,8 @@ void DungeonCrawlerGame::run() {
                     while (true) {
                         if (!getline(cin, gLine)) return;
                         if (gLine.empty()) { cout << "Enter 1 or 2: "; continue; }
-                        try { gChoice = stoi(gLine); } catch (...) { cout << "Invalid. Enter 1 or 2: "; continue; }
+                        try { gChoice = stoi(gLine); }
+                        catch (...) { cout << "Invalid. Enter 1 or 2: "; continue; }
                         if (gChoice == 1 || gChoice == 2) break;
                     }
 
@@ -675,13 +694,15 @@ void DungeonCrawlerGame::run() {
                             cout << "You scavenge " << loot << " gold from the corpse." << endl;
                             break;
                         }
-                    } else {
+                    }
+                    else {
                         if (healthPotions > 0) {
                             healthPotions--;
                             int prev = health;
                             health = min(maxHealth, health + 50);
                             cout << "You use a health potion and recover " << (health - prev) << " health." << endl;
-                        } else {
+                        }
+                        else {
                             cout << "You have no health potions!" << endl;
                         }
                     }
@@ -703,7 +724,7 @@ void DungeonCrawlerGame::run() {
                 }
 
                 cout << "\nYou limp into town, bruised and soaked, with the Eye Jewel and Spiral Stone safely in your pouch." << endl;
-                
+
                 // --- TOWN CENTER PHASE ---
                 cout << "\n### CHAPTER 2: TOWN CENTER ###" << endl;
                 cout << "==============================" << endl;
@@ -713,22 +734,23 @@ void DungeonCrawlerGame::run() {
                 cout << "\nAs you look around, your eyes catch a MYSTERIOUS HOODED FIGURE" << endl;
                 cout << "standing in the shadows near the fountain, watching you intently." << endl;
                 cout << "The figure's gaze makes you uneasy..." << endl;
-                
+
                 cout << "\nWhat do you do?" << endl;
                 cout << "1. Approach the hooded figure" << endl;
                 cout << "2. Ignore the figure and head to the inn to rest" << endl;
                 cout << "3. Ask nearby townsfolk about the hooded figure" << endl;
                 cout << "Enter your choice (1-3): ";
-                
+
                 string townLine;
                 int townChoice = 0;
                 while (true) {
                     if (!getline(cin, townLine)) return;
                     if (townLine.empty()) { cout << "Enter 1-3: "; continue; }
-                    try { townChoice = stoi(townLine); } catch (...) { cout << "Invalid. Enter 1-3: "; continue; }
+                    try { townChoice = stoi(townLine); }
+                    catch (...) { cout << "Invalid. Enter 1-3: "; continue; }
                     if (townChoice >= 1 && townChoice <= 3) break;
                 }
-                
+
                 if (townChoice == 1) {
                     // Approach hooded figure - triggers quest
                     engagedHoodedFigure = true;
@@ -738,49 +760,50 @@ void DungeonCrawlerGame::run() {
                     cout << "\"I have a proposition for you. There's trouble at Old Maggie's farm.\"" << endl;
                     cout << "\"Goblins have been raiding her livestock. Clear them out, and I'll make it worth your while.\"" << endl;
                     cout << "\nThe figure extends a gloved hand. \"50 gold upon completion. What say you?\"" << endl;
-                    
+
                     cout << "\nDo you accept the quest?" << endl;
                     cout << "1. Accept the goblin quest" << endl;
                     cout << "2. Decline and walk away" << endl;
                     cout << "Enter your choice (1-2): ";
-                    
+
                     string questLine;
                     int questChoice = 0;
                     while (true) {
                         if (!getline(cin, questLine)) return;
                         if (questLine.empty()) { cout << "Enter 1 or 2: "; continue; }
-                        try { questChoice = stoi(questLine); } catch (...) { cout << "Invalid. Enter 1 or 2: "; continue; }
+                        try { questChoice = stoi(questLine); }
+                        catch (...) { cout << "Invalid. Enter 1 or 2: "; continue; }
                         if (questChoice == 1 || questChoice == 2) break;
                     }
-                    
+
                     if (questChoice == 1) {
                         // Accept quest
                         acceptedGoblinQuest = true;
                         cout << "\n\"Excellent,\" the figure hisses. \"The farm is just outside the east gate.\"" << endl;
                         cout << "\"Return to me when it's done.\"" << endl;
-                        
+
                         // Travel to farm
                         cout << "\nPress Enter to travel to the farm...";
                         cin.get();
-                        
+
                         cout << "\n### OLD MAGGIE'S FARM ###" << endl;
                         cout << "========================" << endl;
                         cout << "You arrive at the farm as darkness falls." << endl;
                         cout << "You can hear squealing pigs and the harsh laughter of goblins." << endl;
                         cout << "Three goblins are tormenting the livestock in the barn!" << endl;
-                        
+
                         // Goblin combat at farm
                         uniform_int_distribution<int> gobAtkFarm(3, 8);
                         int goblinsRemaining = 3;
                         int totalGoblinLoot = 0;
-                        
+
                         for (int i = 1; i <= 3; i++) {
                             if (health <= 0) break;
-                            
+
                             cout << "\n### GOBLIN " << i << " OF 3 ###" << endl;
                             int gobHealth = 25 + (level * 5);
                             cout << "Goblin Health: " << gobHealth << endl;
-                            
+
                             int farmTurn = 1;
                             while (gobHealth > 0 && health > 0) {
                                 cout << "\n--- Turn " << farmTurn << " ---" << endl;
@@ -789,16 +812,17 @@ void DungeonCrawlerGame::run() {
                                 cout << "\n1. Attack" << endl;
                                 cout << "2. Use health potion" << endl;
                                 cout << "Enter choice (1-2): ";
-                                
+
                                 string farmLine;
                                 int farmCombat = 0;
                                 while (true) {
                                     if (!getline(cin, farmLine)) return;
                                     if (farmLine.empty()) { cout << "Enter 1 or 2: "; continue; }
-                                    try { farmCombat = stoi(farmLine); } catch (...) { cout << "Invalid. Enter 1 or 2: "; continue; }
+                                    try { farmCombat = stoi(farmLine); }
+                                    catch (...) { cout << "Invalid. Enter 1 or 2: "; continue; }
                                     if (farmCombat == 1 || farmCombat == 2) break;
                                 }
-                                
+
                                 if (farmCombat == 1) {
                                     int dmg = strength + smallRand(rng);
                                     gobHealth -= dmg;
@@ -807,21 +831,23 @@ void DungeonCrawlerGame::run() {
                                         cout << "The goblin collapses!" << endl;
                                         int loot = 8 + smallRand(rng);
                                         totalGoblinLoot += loot;
-                    cout << "You loot " << loot << " gold from the goblin." << endl;
+                                        cout << "You loot " << loot << " gold from the goblin." << endl;
                                         goblinsRemaining--;
                                         break;
                                     }
-                                } else {
+                                }
+                                else {
                                     if (healthPotions > 0) {
                                         healthPotions--;
                                         int prev = health;
                                         health = min(maxHealth, health + 50);
                                         cout << "You use a health potion and recover " << (health - prev) << " health." << endl;
-                                    } else {
+                                    }
+                                    else {
                                         cout << "No health potions available!" << endl;
                                     }
                                 }
-                                
+
                                 // Goblin attacks
                                 if (gobHealth > 0) {
                                     int dmg = gobAtkFarm(rng);
@@ -837,86 +863,91 @@ void DungeonCrawlerGame::run() {
                                 farmTurn++;
                             }
                         }
-                        
+
                         if (goblinsRemaining == 0) {
                             completedGoblinQuest = true;
                             gold += totalGoblinLoot;
                             cout << "\n### QUEST COMPLETE! ###" << endl;
                             cout << "You've cleared all the goblins from the farm!" << endl;
                             cout << "Total loot collected: " << totalGoblinLoot << " gold" << endl;
-                            
+
                             // Find mysterious items
                             cout << "\nAs you search the goblins' belongings, you find something unusual..." << endl;
                             cout << "A TORN PARCHMENT and a GLOWING STONE - similar to what you found in the cave!" << endl;
                             cout << "Why would goblins have these items?" << endl;
                             hasParchmentPiece1 = true;
-                            
+
                             cout << "\nPress Enter to return to town...";
                             cin.get();
-                            
+
                             // Return to hooded figure
                             cout << "\n### BACK AT TOWN CENTER ###" << endl;
                             cout << "==========================" << endl;
                             cout << "You return to the town center to find the hooded figure waiting." << endl;
                             cout << "\"Ah, you've returned. Well done,\" the figure says, stepping closer." << endl;
                             cout << "\"Now... about your payment. I believe you found something interesting?\"" << endl;
-                            
+
                             cout << "\nThe figure's voice turns cold:" << endl;
                             cout << "\"The parchment and stone you found - both in the cave AND on those goblins.\"" << endl;
                             cout << "\"I've been following you since you left the Cave of Evil.\"" << endl;
                             cout << "\"Those items belong to me. Hand them over... or suffer the consequences.\"" << endl;
-                            
+
                             cout << "\nThe hooded figure draws a curved dagger!" << endl;
                             cout << "\n### BOSS FIGHT: HOODED SABOTEUR ###" << endl;
                             cout << "===================================" << endl;
-                            
+
                             int bossHealth = 60 + (level * 15);
                             uniform_int_distribution<int> bossAtk(5, 12);
                             int bossTurn = 1;
-                            
+
                             while (bossHealth > 0 && health > 0) {
                                 cout << "\n--- Turn " << bossTurn << " ---" << endl;
                                 cout << "Your Health: " << health << "/" << maxHealth << "  |  Magic: " << magic << "  |  Potions: " << healthPotions << endl;
                                 cout << "Hooded Figure Health: " << bossHealth << endl;
-                                
+
                                 cout << "\n1. Physical attack (Strength-based)" << endl;
                                 cout << "2. Magic attack (Magic-based, costs 2 magic)" << endl;
                                 cout << "3. Use health potion" << endl;
                                 cout << "Enter choice (1-3): ";
-                                
+
                                 string bossLine;
                                 int bossCombat = 0;
                                 while (true) {
                                     if (!getline(cin, bossLine)) return;
                                     if (bossLine.empty()) { cout << "Enter 1-3: "; continue; }
-                                    try { bossCombat = stoi(bossLine); } catch (...) { cout << "Invalid. Enter 1-3: "; continue; }
+                                    try { bossCombat = stoi(bossLine); }
+                                    catch (...) { cout << "Invalid. Enter 1-3: "; continue; }
                                     if (bossCombat >= 1 && bossCombat <= 3) break;
                                 }
-                                
+
                                 if (bossCombat == 1) {
                                     int dmg = strength + smallRand(rng) + 2;
                                     bossHealth -= dmg;
                                     cout << "You strike with your " << weapon << " for " << dmg << " damage!" << endl;
-                                } else if (bossCombat == 2) {
+                                }
+                                else if (bossCombat == 2) {
                                     if (magic >= 2) {
                                         magic -= 2;
                                         int dmg = magic + smallRand(rng) + 5;
                                         bossHealth -= dmg;
                                         cout << "You unleash a magical blast for " << dmg << " damage!" << endl;
-                                    } else {
+                                    }
+                                    else {
                                         cout << "Not enough magic! Attack fails." << endl;
                                     }
-                                } else {
+                                }
+                                else {
                                     if (healthPotions > 0) {
                                         healthPotions--;
                                         int prev = health;
                                         health = min(maxHealth, health + 50);
                                         cout << "You use a health potion and recover " << (health - prev) << " health." << endl;
-                                    } else {
+                                    }
+                                    else {
                                         cout << "No health potions available!" << endl;
                                     }
                                 }
-                                
+
                                 if (bossHealth <= 0) {
                                     cout << "\n### VICTORY! ###" << endl;
                                     cout << "The hooded figure stumbles and falls to their knees." << endl;
@@ -933,7 +964,7 @@ void DungeonCrawlerGame::run() {
                                     cout << "What ritual were they talking about?" << endl;
                                     break;
                                 }
-                                
+
                                 // Boss attacks
                                 if (bossHealth > 0) {
                                     int dmg = bossAtk(rng);
@@ -953,7 +984,7 @@ void DungeonCrawlerGame::run() {
                                 }
                                 bossTurn++;
                             }
-                            
+
                             level++;
                             cout << "\n### CHAPTER 2 COMPLETE! ###" << endl;
                             cout << "You've uncovered a conspiracy and survived an ambush!" << endl;
@@ -964,8 +995,9 @@ void DungeonCrawlerGame::run() {
                             cin.get();
                             return;
                         }
-                        
-                    } else {
+
+                    }
+                    else {
                         // Decline quest
                         cout << "\n\"Pity,\" the figure mutters. \"I thought you had more courage.\"" << endl;
                         cout << "The figure melts back into the shadows and disappears." << endl;
@@ -977,8 +1009,9 @@ void DungeonCrawlerGame::run() {
                         cin.get();
                         return;
                     }
-                    
-                } else if (townChoice == 2) {
+
+                }
+                else if (townChoice == 2) {
                     // Ignore and go to inn
                     cout << "\nYou decide to avoid the mysterious figure and head straight to the inn." << endl;
                     cout << "As you walk away, you feel eyes watching your back..." << endl;
@@ -987,8 +1020,9 @@ void DungeonCrawlerGame::run() {
                     cout << "Press Enter to return to main menu...";
                     cin.get();
                     return;
-                    
-                } else {
+
+                }
+                else {
                     // Ask townsfolk
                     cout << "\nYou approach an elderly merchant packing his cart." << endl;
                     cout << "\"That hooded one? Been lurking around for days,\" he says nervously." << endl;
@@ -1025,7 +1059,8 @@ void DungeonCrawlerGame::run() {
     while (true) {
         if (!getline(cin, nextLine)) return;
         if (nextLine.empty()) { cout << "Enter 1-3: "; continue; }
-        try { nextChoice = stoi(nextLine); } catch (...) { cout << "Invalid. Enter 1-3: "; continue; }
+        try { nextChoice = stoi(nextLine); }
+        catch (...) { cout << "Invalid. Enter 1-3: "; continue; }
         if (nextChoice >= 1 && nextChoice <= 3) break;
         cout << "Invalid. Enter 1-3: ";
     }
@@ -1087,7 +1122,8 @@ void DungeonCrawlerGame::run() {
             while (true) {
                 if (!getline(cin, bladLine)) return; // EOF safety
                 if (bladLine.empty()) { cout << "Enter 1 or 2: "; continue; }
-                try { bladChoice = stoi(bladLine); } catch (...) { cout << "Invalid. Enter 1 or 2: "; continue; }
+                try { bladChoice = stoi(bladLine); }
+                catch (...) { cout << "Invalid. Enter 1 or 2: "; continue; }
                 if (bladChoice == 1 || bladChoice == 2) break;
             }
 
@@ -1108,7 +1144,8 @@ void DungeonCrawlerGame::run() {
                 while (true) {
                     if (!getline(cin, dirLine)) return;
                     if (dirLine.empty()) { cout << "Enter 1-3: "; continue; }
-                    try { dirChoice = stoi(dirLine); } catch (...) { cout << "Invalid. Enter 1-3: "; continue; }
+                    try { dirChoice = stoi(dirLine); }
+                    catch (...) { cout << "Invalid. Enter 1-3: "; continue; }
                     if (dirChoice >= 1 && dirChoice <= 3) break;
                 }
 
@@ -1133,56 +1170,61 @@ void DungeonCrawlerGame::run() {
                             cout << "\nYour Health: " << health << "/" << maxHealth << "  |  Thief Health: " << thiefHealth << endl;
                             cout << "1. Attack  2. Use Health Potion" << endl;
                             string thLine; int thChoice = 0;
-                            while (true) { if (!getline(cin, thLine)) return; if (thLine.empty()) { cout << "Choose 1 or 2: "; continue; } try { thChoice = stoi(thLine); } catch (...) { cout << "Invalid. Choose 1 or 2: "; continue; } if (thChoice==1||thChoice==2) break; }
+                            while (true) { if (!getline(cin, thLine)) return; if (thLine.empty()) { cout << "Choose 1 or 2: "; continue; } try { thChoice = stoi(thLine); } catch (...) { cout << "Invalid. Choose 1 or 2: "; continue; } if (thChoice == 1 || thChoice == 2) break; }
                             if (thChoice == 1) {
                                 int dmg = strength + smallRand(rng);
                                 thiefHealth -= dmg;
                                 cout << "You strike the thief for " << dmg << " damage!" << endl;
                                 if (thiefHealth <= 0) { int loot = 10 + smallRand(rng); totalLoot += loot; cout << "Thief defeated! You take " << loot << " gold." << endl; break; }
-                            } else {
-                                if (healthPotions>0) { healthPotions--; int prev=health; health = min(maxHealth, health+50); cout << "You heal " << (health-prev) << " health." << endl; } else cout << "No health potions!" << endl;
+                            }
+                            else {
+                                if (healthPotions > 0) { healthPotions--; int prev = health; health = min(maxHealth, health + 50); cout << "You heal " << (health - prev) << " health." << endl; }
+                                else cout << "No health potions!" << endl;
                             }
                             // thief attacks
-                            if (thiefHealth>0) { int dmg = thiefAtk(rng); health -= dmg; cout << "Thief stabs you for " << dmg << " damage! (Health: " << max(0,health) << "/" << maxHealth << ")" << endl; if (health<=0) { cout << "\nYou were killed by the thieves. GAME OVER." << endl; cout << "Press Enter to return to main menu..."; cin.get(); return; } }
+                            if (thiefHealth > 0) { int dmg = thiefAtk(rng); health -= dmg; cout << "Thief stabs you for " << dmg << " damage! (Health: " << max(0, health) << "/" << maxHealth << ")" << endl; if (health <= 0) { cout << "\nYou were killed by the thieves. GAME OVER." << endl; cout << "Press Enter to return to main menu..."; cin.get(); return; } }
                         }
                     }
-                    if (health>0) { gold += totalLoot; cout << "\nYou defeated the thieves and escaped with " << totalLoot << " gold." << endl; cout << "Press Enter to return to main menu..."; cin.get(); return; }
+                    if (health > 0) { gold += totalLoot; cout << "\nYou defeated the thieves and escaped with " << totalLoot << " gold." << endl; cout << "Press Enter to return to main menu..."; cin.get(); return; }
                 }
 
                 if (dirChoice == 3) {
                     // West - goblin encounter, success yields strength increase
                     cout << "\nYou head west into the hills. The wind carries distant cackles..." << endl;
                     int gobCount = 2;
-                    uniform_int_distribution<int> gobAtk(3,7);
+                    uniform_int_distribution<int> gobAtk(3, 7);
                     int gobLoot = 0;
-                    for (int g=1; g<=gobCount && health>0; ++g) {
+                    for (int g = 1; g <= gobCount && health > 0; ++g) {
                         int gh = 25;
                         cout << "\nGoblin " << g << " leaps out!" << endl;
-                        while (gh>0 && health>0) {
+                        while (gh > 0 && health > 0) {
                             cout << "\nYour Health: " << health << "/" << maxHealth << "  |  Goblin Health: " << gh << endl;
                             cout << "1. Attack  2. Use Health Potion" << endl;
-                            string gw; int gwc=0; while (true) { if (!getline(cin, gw)) return; if (gw.empty()) { cout << "Choose 1 or 2: "; continue; } try { gwc = stoi(gw); } catch(...) { cout << "Invalid. Choose 1 or 2: "; continue; } if (gwc==1||gwc==2) break; }
-                            if (gwc==1) { int dmg = strength + smallRand(rng); gh -= dmg; cout << "You hit the goblin for " << dmg << " damage!" << endl; if (gh<=0) { int loot = 6 + smallRand(rng); gobLoot += loot; cout << "Goblin slain. You loot " << loot << " gold." << endl; break; } }
-                            else { if (healthPotions>0) { healthPotions--; int prev=health; health=min(maxHealth,health+50); cout << "You heal " << (health-prev) << " health." << endl; } else cout << "No health potions!" << endl; }
-                            if (gh>0) { int dmg = gobAtk(rng); health -= dmg; cout << "Goblin hits for " << dmg << " damage! (Health: " << max(0,health) << "/" << maxHealth << ")" << endl; if (health<=0) { cout << "\nYou were killed by the goblins. GAME OVER." << endl; cout << "Press Enter to return to main menu..."; cin.get(); return; } }
+                            string gw; int gwc = 0; while (true) { if (!getline(cin, gw)) return; if (gw.empty()) { cout << "Choose 1 or 2: "; continue; } try { gwc = stoi(gw); } catch (...) { cout << "Invalid. Choose 1 or 2: "; continue; } if (gwc == 1 || gwc == 2) break; }
+                            if (gwc == 1) { int dmg = strength + smallRand(rng); gh -= dmg; cout << "You hit the goblin for " << dmg << " damage!" << endl; if (gh <= 0) { int loot = 6 + smallRand(rng); gobLoot += loot; cout << "Goblin slain. You loot " << loot << " gold." << endl; break; } }
+                            else { if (healthPotions > 0) { healthPotions--; int prev = health; health = min(maxHealth, health + 50); cout << "You heal " << (health - prev) << " health." << endl; } else cout << "No health potions!" << endl; }
+                            if (gh > 0) { int dmg = gobAtk(rng); health -= dmg; cout << "Goblin hits for " << dmg << " damage! (Health: " << max(0, health) << "/" << maxHealth << ")" << endl; if (health <= 0) { cout << "\nYou were killed by the goblins. GAME OVER." << endl; cout << "Press Enter to return to main menu..."; cin.get(); return; } }
                         }
                     }
-                    if (health>0) { gold += gobLoot; strength += 1; cout << "\nYou defeated the goblins, gaining experience and strength! +1 Strength." << endl; cout << "Press Enter to return to main menu..."; cin.get(); return; }
+                    if (health > 0) { gold += gobLoot; strength += 1; cout << "\nYou defeated the goblins, gaining experience and strength! +1 Strength." << endl; cout << "Press Enter to return to main menu..."; cin.get(); return; }
                 }
 
-            } else {
+            }
+            else {
                 // leave Bladimir's shop
                 cout << "\nYou thank Bladimir and head back out into the town." << endl;
                 cout << "Press Enter to return to main menu...";
                 cin.get();
                 return;
             }
-        } else if (nextChoice == 2) {
+        }
+        else if (nextChoice == 2) {
             // Visit the town shop
             cout << "\nYou decide to visit the town shop to stock up on supplies." << endl;
             visitShop();
 
-        } else {
+        }
+        else {
             // Go home and rest
             cout << "\n### HOME SWEET HOME ###" << endl;
             cout << "======================" << endl;
@@ -1202,3 +1244,4 @@ void DungeonCrawlerGame::run() {
         cout << "\nPress Enter to return to main menu...";
         cin.get();
     }
+}
