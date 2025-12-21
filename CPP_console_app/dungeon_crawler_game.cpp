@@ -300,7 +300,7 @@ void DungeonCrawlerGame::run() {
     }
 
     // --- Level 1: Entrance to the Cave of Evil ---
-    cout << "\n### LEVEL 1: CAVE ENTRANCE ###" << endl;
+    cout << "\n### LEVEL 1: The Cave of EVIL ###" << endl;
     cout << "You find yourself at the entrance of the Cave of Evil." << endl;
     cout << "A strange compulsion tugs at your chest, urging you inside." << endl;
     cout << "You step into the cave; it's pitch dark. What do you do next?" << endl << endl;
