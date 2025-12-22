@@ -2,24 +2,17 @@
 #define DUNGEON_CRAWLER_GAME_H
 
 #include "game_utils.h"
+#include "Character.h"
+#include "Shop.h"
 
 class DungeonCrawlerGame {
 private:
     mt19937 rng;
     string playerName;
-    string characterClass;
-    string weapon;
-    int strength;
-    int magic;
-    int health;
-    int maxHealth;
     int level;
     int gold;
 
-    // inventory / equipment
-    int armor; // additional armor value (increases maxHealth)
-    int healthPotions; // count of health potions
-    int manaPotions; // count of mana potions
+    // inventory / equipment were moved into Character
 
     // quest items / chapter items
     bool hasEyeJewel;
@@ -31,11 +24,6 @@ private:
     bool engagedHoodedFigure;
     
     void displayWelcome();
-    void chooseClass();
-    void chooseWeapon();
-    void allocateStatPoints();
-    void displayCharacterSheet();
-    void visitShop();
     
 public:
     DungeonCrawlerGame(const string& name);
